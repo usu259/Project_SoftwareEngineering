@@ -81,380 +81,151 @@ Prepared by {{author}}
 
 **Delete**
 
-The basic idea is a small and simple application for work reports. It allows a user (worker) to document the work that has been completed. These work reports done for projects and/or customers. A business administration user can createn an invoice based on one or many reports.
+This application is a streamlined work reporting system designed for simplicity and ease of use. Its primary purpose is to allow workers (end-users) to document completed tasks associated with specific projects or customers. Subsequently, administrative users can aggregate these reports to generate accurate invoices.
 
-The system could include even more workflows. Many products on the market excatly do so. But for a "simple" worker those functions can be overwhelming. Therefore, this app should be as simple as possible and include only necessary steps.
-
-The document also includes future ideas (or other ideas out of scope). Those ideas are declared as out-of-scope in the following. Still, they're included for the sake of completeness.
-
+While many market alternatives offer complex workflows, this application intentionally prioritizes a minimalist feature set to prevent user fatigue and ensure high adoption rates among field staff. This document also outlines out-of-scope concepts and future considerations to provide a comprehensive roadmap without compromising the initial goal of simplicity.
 
 
 ### 1.1 Document Purpose
 
-This document defines the requirments for a simple application to document work reports and generate automated invoices based on the work reports. Further, the document is adressed to the developers, testers and owners (a group of students) as well as the course leader.
-
+This Software Requirements Specification (SRS) defines the functional and non-functional requirements for a streamlined work reporting and automated invoicing application. The primary objective is to provide a clear technical roadmap for developers and testers, serve as a project baseline for owners (student group), and act as a formal evaluation document for the course leader.
 
 ### 1.2 Product Scope
 
-A small application to document work efforts as reports and generate automated invoices out of it. The reports are based on a product stem that includes material and human resources. The application does, to this time, not include a login process, various system administrator tasks and a customer view.
+The application, hereafter referred to as "the System," facilitates the logging of labor and material usage into digital work reports. The System automates the aggregation of these reports into professional invoices, reducing manual billing errors.Exclusions: In its current iteration, the System intentionally excludes authentication (login) modules, advanced administrative system configuration, and a dedicated portal for external customers. These are considered out-of-scope to ensure a lightweight and focused MVP (Minimum Viable Product).
 
 
 ### 1.3 Definitions, Acronyms, and Abbreviations
 
-| Term        | Definition                                                                                                 |
-| ----------- | ---------------------------------------------------------------------------------------------------------- |
-| stem        | a database of available personal and material positions for daily reports                                  |
-| work report | documentation of carried out work based on material and human resources                                    |
-| invoice     | several work reports summed by a project or a customer completed with formal documents and an invoice form |
-
-
-💡 Tips:
-
-- Include terms that impact interpretation of requirements (e.g., “user,” “tenant,” “near real-time”).
-
-- Keep entries alphabetized and consistent across the document set.
-
-| Term | Definition                                                                                                                   |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------- |
-| API  | Application Programming Interface - A set of definitions and protocols for building and integrating application software     |
-| SRS  | Software Requirements Specification - A document that describes the intended purpose, requirements, and nature of a software |
-| UI   | User Interface - The visual part of computer application through which a user interacts with a software                      |
-
-
+| Term        | Definition                                                                                                                    |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| API         | Application Programming Interface - A set of definitions and protocols for building and integrating application software.     |
+| Invoice     | A billing document generated by aggregating one or many work reports for a specific project or customer.                      |
+| MVP         | Minimum Viable Product - A version of a product with just enough features to be usable by early customers.                    |
+| SRS         | Software Requirements Specification - This document; describes the intended purpose and nature of the software.               |
+| Stem Data   | A centralized database (catalog) of available personnel, hourly rates, and material items available for selection in reports. |
+| UI          | User Interface - The visual elements through which a user interacts with the software.                                        |
+| Work Report | A digital record documenting specific tasks completed, including time spent and materials used.                               |
 
 ### 1.4 References
 
-💬 _Lists external sources that are normative or informative for this SRS._
-
-
-
-➥ Cite standards, contracts, policies, interface specs, UX style guides, use-case docs, architectural decisions, or a vision/scope document. For each reference, include title, author/owner, version, date, and location/URL. Indicate whether each reference is normative (binding) or informative (guidance).
-
-
-
-💡 Tips:
-
-- Prefer stable links or repository paths over volatile URLs.
-
-
+The following documents and standards provide additional context for this SRS:
+ISO/IEC/IEEE 29148:2018, Systems and software engineering — Life cycle processes — Requirements engineering. Informative.
+_Project Vision and Scope Document, Student Group Alpha, v1.0 (2024). Informative._
+_Company UX Style Guide, Student Group Internal Repo (link), v0.5. Normative._
 
 ### 1.5 Document Overview
 
-💬 _Brief guide to the structure of the SRS so readers can quickly find what they need._
-
-
-
-➥ Summarize what each major section covers (Product Overview, Requirements, Verification, Appendixes), note any document conventions, and mention how updates and revision history are managed.
-
-
-
-💡 Tips:
-
-- Keep to 3–5 sentences focusing on navigation and conventions.
+This SRS is organized into five major sections. Following this Introduction, Section 2: Overall Description provides a high-level view of product functions and user characteristics. Section 3: System Features details the specific functional requirements. Section 4: External Interface Requirements defines the UI and API needs, and Section 5: Other Non-functional Requirements covers performance and security.
 
 
 
 ## 2. Product Overview
-
-💬 _Provides background and context influencing the product’s requirements._
-
-
-
 ### 2.1 Product Perspective
+The market for work reporting tools is saturated with high-powered, complex applications that often overwhelm small teams with unnecessary features. These tools frequently rely on proprietary cloud storage, making direct data access difficult or expensive.
 
-💬 _Places the product within a larger ecosystem or lineage._
-
-The application discussed here is a standard reporting tool that exists in many different ways on the market. Most tools on the market are very powerful and thus confusing if there is no way to encapsulate. Other products are fine-tailored to some use-cases and neglect every other case. Most tools have in common that they are rather expensive and on second thought, data is mostly stored somewhere in a cloud where direct access is impossible.
-
-The application described here is a smaller and way simpler version. Basically, it is fine-tailored to a small company with 1-5 employees (a.k.a. workers). Still the applications interfaces need to be designed in a way that would allow further developement or stand-alone extensions.
-
-**Insert**:
-- A high-level context diagram may help to orient the reader.
-
-
+This application is a streamlined, lightweight alternative specifically tailored for small companies (1–5 employees). While simple in its current iteration, the System's architecture must remain modular to allow for future stand-alone extensions or integration into larger ecosystems.
 
 ### 2.2 Product Functions
+The System’s core functionality centers on the transition from labor documentation to billing:
 
-Those basic functions are:
-- a worker can write one or several daily work reports to a customer
-- a worker can view and edit his previous reports
-- an accountant can view and edit all reports created by workers
-- an accountant can create an invoice based on one to several reports to a customer
-
-**Delete**
-Some near-future functions are:
-- an accountant (or worker with authorization) can edit material or personal positions
-- an accountant can edit automatically generated invoices (e.g. preliminary text)
-- a worker can view his reported work time
-
-
-**Insert**
-
-- Include a top-level data flow or use case diagram if helpful.
-
-
+- **Work Documentation**: Workers can create, view, and edit daily reports linked to specific customers or projects.
+- **Report Management**: Accountants can review and modify all worker reports to ensure data integrity before billing.
+- **Automated Invoicing**: Accountants can aggregate one or more reports into a single, professional invoice.
+- **Stem Data Utilization**: All users can draw from a pre-defined database (Stem) of materials and human resources to ensure consistency.
 
 ### 2.3 Product Constraints
+To ensure project success and compliance, the following constraints are mandatory:
 
-💬 _Defines contextual limitations or conditions shaping design and implementation._
-There are no organizational policies and there is (not yet) a decision regarding the technology stack and distribution.
-
-The application must be developed open-source and must be shared online (e.g. GitHub).
-
-
-
-💡 Tips:
-
-- State constraints as verifiable "must" statements (e.g., “must use FIPS 140–3 validated crypto modules”).
-
-- Distinguish external/internal and mandatory/preferred constraints.
-
-- Avoid design decisions unless truly binding.
-
-
-
-📝 Note:
-
-Requirements (Section 3) defines verifiable system obligations—specific behaviors or qualities the system shall exhibit in order to satisfy limits described in this section.
-
-
+- **Open Source**: The application must be developed as open-source software and hosted on a public repository (e.g., GitHub).
+- **Data Sovereignty**: The System must allow for direct database access for administrative tasks.
+- **Minimalist UI**: The interface must require no more than three interactions to complete a standard work report entry.
+- **Timeline**: Development is strictly limited to the duration of the SoE SS 2026 semester.
 
 ### 2.4 User Characteristics
 
-💬 _Defines the user groups and the attributes that affect requirements._
+**Worker (_End-User_)**
 
-**Worker**
-Uses the system daily to document his work and maybe the work of some team members. IT skills are on a moderate user level. A worker is frustated fast if it takes im too many steps to get to his desired result. Long response times, updates during work time and ... could make him/her refuse the application. He may works on a portable device (smartphone rahter than tablet).
-The worker has only access to the daily reports and only to the ones entered by him/her. He can edit those reports on the actual date and also in the future (as long as no invoice was created!).
-To edit reports the worker can view the customer/project database as well as the stem. The worker has by default no authorization to edit the customer/project database or the stem. The worker must not see prices for personal positions.
-The worker can add positions that cannot be found in the stem as a "text position".
+| | |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Profile     | Moderate IT skills. Primary goal is quick data entry under field conditions.                                                                                                                                     |
+| Device      | Primarily uses mobile devices (smartphones).                                                                                                                                                                     |
+| Access      | Can create and edit their own reports. Access is revoked once a report has been included in an invoice.                                                                                                          |
+| Needs       | High performance and offline-first capabilities to prevent frustration during site work.                                                                                                                         |
+| Permissions | Can view customers and the "Stem" database but cannot edit them. They may add "Text Positions" for unique items not found in the Stem. To maintain privacy, workers cannot view unit prices for human resources. |
 
-**Accountant**
-Uses the system weekly to daily to control reports and generate invoices if projects are finished. IT skills are on an intermediate user level. An accountant wants his desktop nice and tidy and need fast access to his actions. He/She rather works on a desktop (larger screen) than on a notebook or tablet. 
-The accountant can access all daily reports and view them grouped by customer/project. He/She has the authorization to edit all reports (as long as no invoice was created!) to fix mistakes or override. 
-See _To define_...
-The accountant can generate an automated invoice based on a selection of reports. Reports that have been involved in an invoice before can't be chosen again!
+**Accountant (_Administrative User_)**
 
-
-➥ Identify user classes, roles, and personas, noting expertise, access levels, frequency of use, accessibility needs, and goals.
-
-**To define**:
-- Does a worker need to close a daily report as an action to finalize his documentation?
-- Does an accountant need rights to edit the stem at this point? (Or is there an admin doing this on database level)
-
-**Hints**
-- Note localization and accessibility considerations that affect UI/UX requirements.
-
-
+| | |
+| ----------- | ------------------------------------------------------------------------------------------------- |
+| Profile     | Intermediate IT skills. Focuses on data accuracy and financial output.                            |
+| Device      | Primarily uses desktop systems with large displays.                                               |
+| Access      | Full visibility of all worker reports, grouped by project or customer.                            |
+| Needs       | Bulk editing capabilities and clear "Status" indicators (e.g., Billed vs. Unbilled).              |
+| Permissions | Can override any report data (pre-invoicing) and trigger the automated invoice generation process |
 
 ### 2.5 Assumptions and Dependencies
 
-💬 _External assumed factors or conditions, as opposed to known facts, that the project relies on._
-
-In this initial state a system admin is assumed to change the stem on database level. This system admin is out of scope, no UI desing necessary.
-
-To this point the developement is limited by the time and the SoE SS 2026 model circumference. Therefore, architectural considerations are noted in the SRS but may not be implemented that way.
-
+- **Database-Level Administration**: It is assumed that "Stem" data (personnel rates, material costs) will be managed directly at the database level by a System Administrator. No UI for these tasks is required in this version.
+- **Finalization Logic**: To maintain data integrity, a report is considered "locked" and uneditable by a worker once it is submitted or flagged for invoicing.
+- **Environment**: The project assumes a stable web-standard environment for deployment, though specific tech-stack decisions remain pending.
 
 ## 3. Requirements
-
-💬 _This section specifies **verifiable** requirements of the software product to enable design and testing._
-
-
-
-➥ State requirements to a level of detail sufficient for design and verification. Use unique identifiers, consistent keywords (shall/should/may), and clear conditions. Describe inputs, processing in response, and outputs where applicable. Reference the relevant 2.3 Product Constraints that the requirement addresses.
-
-
-
-📃 Template (applies to **all** requirements):
-
-```markdown
-
-- ID: REQ-FUNC-001
-
-- Title: Short title, representative of the requirement...
-
-- Statement: The system shall...
-
-- Rationale: ...
-
-- Acceptance Criteria: ...
-
-- Verification Method: Test | Analysis | Inspection | Demonstration | Other
-
-- More Information: Additional context. Links to related artifacts.
-
-```
-
-
-
-Requirement ID schema and traceability:
-
-- ID format: REQ-[AREA]-[NNN]-[VER] (optional -[VER] if versioned), where AREA ∈ {FUNC, INT, PERF, SEC, REL, AVAIL, OBS, COMP, INST, BUILD, DIST, MAINT, REUSE, PORT, COST, DEAD, POC, CM, ML}.
-
-- Uniqueness: IDs must be unique and immutable; changes increment -[VER] and are recorded in Revision History.
-
-- Traceability: Each test artifact may reference the requirement ID.
-
-
-
-💡 Tips:
-
-- Make each requirement testable and unambiguous, using standard metrics and avoiding vague terms (e.g., “user-friendly,” “fast”).
-
-
-
 ### 3.1 External Interfaces
-
-💬 _Specifies all external inputs and outputs, covering both required and provided interfaces._
-
-
-
-➥ Provide interface definitions sufficient for implementation and test.
-
-
-
-💡 Tips:
-
-- Use interface control documents or schemas where appropriate and reference them here.
-
-
-
 #### 3.1.1 User Interfaces
+- **UI-001 (Mobile First)**: The System shall employ a responsive web design optimized for viewport widths of 375px to 430px (standard smartphones) for the Worker role.
 
-💬 _Describes how users interact with the system at a logical level._
+- **UI-002 (Minimalist Input)**: The Work Report creation screen shall require no more than three clicks/taps to reach from the dashboard.
 
-
-
-➥ Define UI elements, flows, and standards to be followed (style guides, accessibility guidelines). Include layout constraints, common controls (e.g., help, search), keyboard shortcuts, error/empty-state behavior, and localization. Keep visual designs in a separate UI specification and reference them.
-
-
-
-💡 Tips:
-
-- Reference accessibility standards (e.g., WCAG) and platform-specific guidelines.
-
-- Consider organizing into subcategories for clarity: Usability/Accessibility (inputs/outputs and dialogs to fit user abstractions, abilities, and expectations), and Convenience.
-
-
+- **UI-003 (Accessibility)**: The UI shall maintain a minimum color contrast ratio of 4.5:1 for all text elements to comply with WCAG 2.1 Level AA.
 
 #### 3.1.2 Hardware Interfaces
 
-💬 _Details interactions with physical devices and platforms._
-
-
-
-➥ Specify (un)supported device types, data/control signals, electrical or mechanical characteristics if relevant, and communication protocols. Include timing, throughput, and reliability expectations.
-
-
-
-💡 Tips:
-
-- Reference applicable hardware specs and certification requirements.
-
-
+_None so far._
 
 #### 3.1.3 Software Interfaces
+- **INT-001 (PDF Generation)**: The System shall integrate with a PDF generation library (e.g., Puppeteer or ReportLab) to transform aggregated report data into a standardized invoice format.
 
-💬 _Defines integrations with other software components and services._
+- **INT-002 (Database)**: The System shall interface with a relational database (SQLite or PostgreSQL) via an ORM layer to ensure data persistence and allow direct admin-level queries.
 
+### 3.2 Functional Requirements
 
+- ID: **REQ-FUNC-001**
+- Title: Daily Work Report Entry
+- Statement: The System shall allow Workers to create a daily report by selecting a Customer/Project and adding line items from the "Stem" database.
+- Rationale: Core documentation feature for field staff.
+- Acceptance Criteria: A user can save a report containing at least one personnel position and one material position.
+- Verification Method: Demonstration.
 
-➥ List connected systems (name and version), required or provided services/APIs, data items/messages exchanged, communication styles/protocols, and limit/error/timeout semantics. Identify shared data and ownership.
+- ID: **REQ-FUNC-002**
+- Title: Free-Text Position Entry
+- Statement: The System shall provide an option for Workers to add "Text Positions" to a report for items not found in the Stem database.
+- Rationale: Handles non-standard field requirements without database updates.
+- Acceptance Criteria: A report can be saved with a custom text description and quantity.
+- Verification Method: Test.
 
+- ID: **REQ-FUNC-003**
+- Title: Automated Invoice Aggregation
+- Statement: The System shall allow Accountants to select multiple unbilled reports for a single Customer and generate one consolidated invoice.
+- Rationale: Efficiency in billing; reduces manual data entry for the Accountant.
+- Acceptance Criteria: Selected reports are marked as "Billed" and a single PDF is generated with the sum of all positions.
+- Verification Method: Test.
 
-
-💡 Tips:
-
-- Capture versioning and backward compatibility policies.
-
-- Define authentication/authorization expectations for each integration.
-
-
-
-### 3.2 Functional
-
-💬 _Specifies the externally observable behaviors and functions the software shall provide._
-
-
-
-➥ Organize functional requirements by feature, use case, or service. For each, describe triggers/inputs, processing/logic (at a black-box level), outputs, and error conditions. For AI behaviors, define determinism bounds (e.g., temperature), refusal criteria, safety rules, and human review points.
-
-
-
-💡 Tips:
-
-- Include edge cases and negative scenarios for completeness.
-
-- For AI features, include fallback behaviors and thresholds for abstention.
-
-
+- ID: **REQ-FUNC-004**
+- Title: Edit Lock on Invoiced Reports
+- Statement: The System shall prevent any modifications to a Work Report by a Worker once it has been associated with an Invoice.
+- Rationale: Maintains financial integrity and prevents "double-dipping" or retrospective changes
+- Acceptance Criteria: The "Edit" button is disabled/hidden for any report with a "Billed" status
+- Verification Method: Analysis / Test.
 
 ### 3.3 Quality of Service
-
-💬 _Quality attributes that constrain or qualify functional behavior._
-
-
-
-➥ Use specific metrics, ranges, and conditions.
-
-
-
-💡 Tips:
-
-- When a quality applies only to a subset of functions, reference the related requirement IDs.
-
-- Provide rationale when targets cut across functions to aid trade-off decisions.
-
-
-
 #### 3.3.1 Performance
-
-💬 _Response time, throughput, and resource usage expectations._
-
-
-
-➥ Specify timing relationships, peak/steady-state loads, and performance targets under expected conditions. Include measurement methods, environments, and acceptance thresholds. Note any real-time constraints.
-
-
-
-💡 Tips:
-
-- Include scalability targets and capacity planning assumptions.
-
-- Consider organizing into subcategories for clarity: Time (latency, throughput, etc.) and Space (memory, storage, bandwidth, etc.).
-
-
+- **REQ-PERF-001**: The System shall load the "Stem" selection list (up to 500 items) in less than 500ms under standard 4G latency conditions.
+- **REQ-PERF-002**: PDF Invoice generation shall complete within 3 seconds of the Accountant's request.
 
 #### 3.3.2 Security
-
-💬 _Defines the protection of data, identities, and operations._
-
-
-
-➥ Define authentication, authorization, data protection (in transit/at rest), auditing, and privacy requirements. Address abuse/misuse and external attacks (e.g., injection, data exfiltration, or service compromise), and include secure defaults and incident response requirements.
-
-
-
-💡 Tips:
-
-- Distinguish mandatory controls vs. recommended practices.
-
-- Consider organizing into subcategories for clarity: Safety (harmful external outcomes), Confidentiality (disclose data to unauthorized parties), Privacy (private data disclosed without consent), Integrity (data modified without authorization), and Availability (authorized data or resources made available when requested).
-
-
-
-📝 Note:
-
-Place generic security controls here (3.3.2), and cross-reference from supported controls as necessary:
-
-- Use 3.1 External Interfaces for interface-level validation and secure protocols.
-
-- Use 3.4 Compliance for regulatory/contractual obligations and audit evidence.
-
-- Use 3.6 AI/ML for model-specific runtime protections and data governance.
-
-
+- **REQ-SEC-001 (Role Privacy):** The System shall filter "Stem" data in the Worker view to exclude unit costs and profit margins.
+- **REQ-SEC-002 (Data Integrity)**: The System shall use parameterized queries for all database interactions to prevent SQL injection.
 
 #### 3.3.3 Reliability
 
@@ -468,318 +239,160 @@ Place generic security controls here (3.3.2), and cross-reference from supported
 
 #### 3.3.4 Availability
 
-💬 _System uptime and readiness to deliver service._
+_None so far._
 
-
-
-➥ Define availability targets, maintenance windows, and mechanisms like checkpointing, recovery, and restart. Include geographical/zone redundancy if applicable.
-
-
-
-💡 Tips:
+Define availability targets, maintenance windows, and mechanisms like checkpointing, recovery, and restart. Include geographical/zone redundancy if applicable.
 
 - Express availability in terms meaningful to users (e.g., downtime per month) and tie to SLAs/SLOs.
-
 - Capture scale-out/in behavior affecting availability (e.g., max failover time, quorum constraints).
-
-
 
 #### 3.3.5 Observability
 
-💬 _Ability to understand system state and behavior in production through telemetry._
+_None so far._
 
 
 
 ➥ Define requirements for logs, metrics, traces, and profiling: events/fields, cardinality limits, sampling, retention, and privacy/PII handling in telemetry. Specify standard labels (e.g., service, version, tenant), correlation/trace IDs propagation, and redaction policies. State SLO-aligned alert rules, dashboards, and ownership.
 
-
-
-💡 Tips:
-
 - Avoid maintenance-process details (keep runbooks and on-call policies in 3.5.4 Maintainability).
-
 
 
 ### 3.4 Compliance
 
-💬 _Requirements derived to satisfy external standards, regulations, or contracts._
-
-
+_None so far._
 
 ➥ Specify mandated formats, naming conventions, accounting procedures, provider/user rights and agreements, licensing agreements, audit tracing, records retention, and reporting. For each compliance item, reference 2.3 Product Constraints if applicable, or cite the authoritative source directly.
 
 
-
 ### 3.5 Design and Implementation
-
-💬 _Constraints or mandates affecting how the solution is designed, deployed, and maintained._
-
-
 
 #### 3.5.1 Installation
 
-💬 _Ensures the software runs smoothly in its target environments._
-
-
+_None so far._
 
 ➥ Define (un)supported platforms/environments, prerequisites, installation methods, environment configuration (e.g., env vars, secrets), and rollback/uninstall procedures.
 
-
-
-💡 Tips:
-
 - Detail automation expectations (e.g., IaC, installer scripts, container images).
-
 - Keep scaling mechanics (topology, multi-region) in 3.5.3 Distribution; keep scaling targets in 3.3 QoS.
-
-
 
 #### 3.5.2 Build and Delivery
 
-💬 _Defines the controls for building, packaging, and delivering software artifacts to ensure integrity, traceability, and reproducibility._
-
-
+_None so far._
 
 ➥ Define how source code is transformed into deployable artifacts and moved through environments. Describe expectations for build reproducibility, dependency management, licensing, configuration management, artifact verification, and release promotion.
 
-
-
-💡 Tips:
-
 - Cross-reference 3.5.1 Installation and 3.5.10 Change Management for environment setup, versioning, and release traceability.
-
 - Avoid operational topology details (those belong in 3.5.3 Distribution).
-
-
 
 #### 3.5.3 Distribution
 
-💬 _Addresses geographically or organizationally distributed deployments, data, and devices._
-
-
+_None so far._
 
 ➥ Specify deployment topologies, component and data distribution/replication approaches and scale-out runbooks, and constraints imposed by organizational or network structure.
 
-
-
 #### 3.5.4 Maintainability
 
-💬 _Attributes that make the software easier to modify, fix, and evolve._
-
-
-
-➥ Define expectations for modularity, code complexity, interfaces, coding standards, developer oriented observability, documentation, software delivery performance, and technical debt management.
-
-
+- **REQ-MAINT-001**: The codebase shall maintain a minimum of 70% unit test coverage for the invoice calculation logic.
+- **REQ-MAINT-002**: All API endpoints shall be documented using Swagger/OpenAPI standards to allow for future front-end extensions.
 
 #### 3.5.5 Reusability
 
-💬 _Encourages leveraging components across products or contexts when appropriate._
-
-
+_None so far._
 
 ➥ Identify components intended for reuse and any constraints on their dependencies or technology choices. Specify modularization, API stability, packaging, and documentation to enable reuse.
 
-
-
 #### 3.5.6 Portability
 
-💬 _Ability to run on multiple platforms or environments with minimal changes._
-
-
+_None so far._
 
 ➥ Specify (un)supported operating systems, hardware architectures, cloud providers, or container runtimes. Define abstraction layers, configuration policies, and externalization of environment-specific settings.
 
-
-
 #### 3.5.7 Cost
 
-💬 _Financial considerations or cost targets._
-
-
-
-➥ State budgetary limits, cost-per-transaction targets, licensing constraints, or cloud spend envelopes that influence design decisions.
-
-
-
-💡 Tips:
-
-- Keep costs high-level unless contractually defined.
-
-- Link to a cost model or TCO assumptions where available.
-
-- Note variable vs. fixed cost expectations impacting scaling strategies.
-
-
+- **REQ-COST-001**: The application must be deployable on a "Free Tier" cloud hosting environment (e.g., Render, Railway, or Vercel) for the duration of the course.
 
 #### 3.5.8 Deadline
 
-💬 _Schedule expectations that affect scope and prioritization._
-
-
-
-➥ Specify key milestones, delivery dates, or phases/increments. Indicate dependencies between milestones and required readiness criteria.
-
-
-
-💡 Tips:
-
-- Use deadlines to guide apportioning of requirements (Section 2.6).
-
-
+- **REQ-DEAD-001**: A functional "Proof of Concept" showing the end-to-end flow from Report to Invoice must be ready for the mid-semester review (Date: TBD).
 
 #### 3.5.9 Proof of Concept
 
-💬 _Validates feasibility and de-risks critical assumptions before full-scale delivery._
-
-
+_None so far._
 
 ➥ Define the objectives, scope, success criteria, and timebox for any POCs. Describe what will be validated (technical, usability, performance) and how results will influence requirements or design.
 
-
-
-💡 Tips:
-
 - Keep POCs narrowly focused and measurable. Focus on validation goals, not implementation details.
-
-
 
 #### 3.5.10 Change Management
 
-💬 _Controls how changes are introduced and communicated._
-
-
+_None so far._
 
 ➥ Define change categories (breaking, additive, bugfix), approval workflow, and required artifacts (changelogs, evaluation summaries, migration guides, release notes). Specify backward/forward compatibility guarantees, client communication plans, deprecation timelines, and rollout/rollback procedures.
 
-
-
 ### 3.6 AI/ML
 
-💬 _This section defines requirements unique to systems incorporating machine learning or data-driven components at their core. These requirements complement functional, quality, and design aspects in preceding sections but address ML-specific lifecycle, data, and ethical considerations._
+_Out of Scope_
 
-
+Note: This project currently does not implement AI/ML features. Future considerations for automated text recognition of physical receipts are noted in the project roadmap but are not required for this version.
 
 #### 3.6.1 Model Specification
 
-💬 _Defines what each model is intended to do and the measurable criteria for acceptable performance._
-
-
-
 ➥ Describe model(s) purpose, scope, expected behavior, key inputs and outputs, and measurable performance objectives. Note any validation datasets, benchmarks, or versioning practices used to ensure reproducibility.
-
-
-
-💡 Tips:
 
 - Distinguish baseline targets from aspirational improvements and define acceptable tolerance for drift.
 
-
-
 #### 3.6.2 Data Management
-
-💬 _Ensures integrity, traceability, and ethical lifecycle of data used in model training, validation, and operation._
-
-
 
 ➥ Specify dataset origin, ownership, consent conditions; labeling processes and quality controls; data lineage, versioning, and reproducibility (training → validation → inference); storage, access controls, and anonymization/pseudonymization standards; handling of missing, synthetic, or augmented data.
 
-
-
 #### 3.6.3 Guardrails
-
-💬 _Ensure that the AI system operates safely, predictably, and within approved boundaries._
-
-
 
 ➥ Specify how the system validates inputs, filters or constrains outputs, and limits available actions to prevent harm, misuse, or unintended consequences. Include mechanisms to detect and respond to malicious inputs or unsafe operational conditions.
 
-
-
-💡 Tips:
-
 - Treat “guardrails” across input, output, and action layers.
-
 - Define escalation, logging, and rollback procedures when safety constraints are triggered.
-
 - Cross-reference 3.3.2 Security for system-level protections and 3.6.4 Ethics for normative expectations.
-
-
 
 #### 3.6.4 Ethics
 
-💬 _Addresses fairness, transparency, and accountability in model behavior and outcomes._
-
-
-
 ➥ Define how ethical considerations will be identified, measured, and managed throughout development and operation. Include fairness objectives, explainability expectations, and documentation or review requirements.
 
-
-
-💡 Tips:
-
 - Use fairness metrics appropriate to context (e.g., demographic parity, equal opportunity).
-
 - Consider organizing into subcategories for clarity: Fairness (societal bias in outcomes), Interpretability (can inspect the model and understand outputs), and Explainability (can explain an output for a given input).
-
 - Coordinate with 3.6.3 Guardrails for enforcement mechanisms and 3.6.5 Human-in-the-Loop for human oversight.
-
-
 
 #### 3.6.5 Human-in-the-Loop
 
-💬 _Specifies the role of human oversight in decisions influenced or made by machine learning models._
-
-
-
 ➥ Describe where and how human review, approval, or intervention is required. Clarify review latency or throughput expectations, escalation paths, feedback mechanisms, traceability, and auditability of human actions.
-
-
-
-💡 Tips:
 
 - Link to applicable roles defined in 2.4 User Characteristics.
 
-
-
 #### 3.6.6 Model Lifecycle and Operations
-
-💬 _Defines requirements for deploying, monitoring, retraining, and retiring models in production._
-
-
 
 ➥ Outline how models transition from development to production, how their performance and data quality are monitored, and how retraining or rollback is triggered and managed. Include expectations for versioning and archival.
 
-
-
 ## 4. Verification
 
-💬 _Describes how each requirement will be verified to provide objective evidence of compliance._
+This section outlines the objective evidence required to prove that each requirement defined in Section 3 has been satisfied. The primary verification methods are **Test** (automated or manual execution), **Analysis** (evaluating code/logic), and **Demonstration** (showing a workflow to a stakeholder).
 
+| Requirement ID | Title | Verification Method | Test/Artifact Link | Status | Evidence |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **REQ-FUNC-001** | Daily Work Report Entry | **Test** | `tests/ui_worker_report.py` | Pending | Test Run Report |
+| **REQ-FUNC-002** | Free-Text Position Entry | **Test** | `tests/unit_report_logic.js` | Pending | Console Output |
+| **REQ-FUNC-003** | Invoice Aggregation | **Demonstration** | `docs/demo_scripts/billing.md` | Pending | Signed Demo Log |
+| **REQ-FUNC-004** | Edit Lock on Invoiced Reports | **Analysis** | `src/middleware/auth_lock.js` | Pending | Code Review Summary |
+| **REQ-PERF-001** | Selection List Load Time | **Test (Manual)** | `tests/performance_metrics.xlsx` | Pending | Browser DevTools Log |
+| **REQ-SEC-001** | Price Visibility (Privacy) | **Inspection** | `src/views/worker_view.html` | Pending | Screenshot of UI |
+| **REQ-SEC-002** | SQL Injection Protection | **Analysis** | `docs/security/threat_model.md` | WIP | Static Analysis Report |
+| **REQ-COST-001** | Free Tier Deployment | **Demonstration** | `https://project-demo.vercel.app` | Pending | Live URL Access |
+| **REQ-MAINT-001** | 70% Unit Test Coverage | **Analysis** | `scripts/coverage_report.sh` | Pending | Istanbul/LCOV Report |
+| **REQ-DEAD-001** | Mid-Semester POC | **Demonstration** | `docs/milestones/poc_v1.md` | Pending | Presentation Slides |
 
-
-➥ Outline verification methods (test, canary metrics, analysis, inspection, demonstration) and test evidence preferably in a matrix paralleling Section 3. Consider adding environment details, tools, and test data requirements.
-
-
-
-| Requirement ID | Verification Method | Test/Artifact Link | Status | Evidence           |
-
-|----------------|---------------------|--------------------|--------|--------------------|
-
-| REQ-FUNC-001   | test                | tests/UC01.md      | Passed | reports/tuc01.html |
-
-| REQ-SEC-003    | analysis            | threat-model.md    | WIP    |                    |
-
-
-
-💡 Tips:
-
-- Include both positive and negative tests and include non-functional verification (performance, security, reliability).
-
-- Verification artifacts may be versioned and linked to CI/CD.
-
-- For AI, reference Model Cards and track eval datasets’ versions and ensure reproducibility of results.
-
+### 4.1 Verification Environment
+* **Development:** Localhost (Node.js/Python environment).
+* **Staging:** Public repository CI (GitHub Actions).
+* **Database:** SQLite for local testing; PostgreSQL for production/staging.
+* **Tools:** Jest/PyTest for logic, Selenium/Playwright for UI, and Lighthouse for performance.
 
 
 ## 5. Appendixes
