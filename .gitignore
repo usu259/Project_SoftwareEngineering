@@ -1,3 +1,5 @@
-_pycache_
-.vscode
-.ipynb
+**/__pycache__/
+*.pyc
+*.pyo
+.vscode/
+*.ipynb
