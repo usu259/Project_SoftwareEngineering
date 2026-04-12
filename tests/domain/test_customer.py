@@ -47,6 +47,6 @@ def test_update_contact_strips_whitespace_from_email(customer):
     assert customer.email == "spaced@example.com"
 
 
-
 def test_full_name_returns_first_and_last_name_with_space(customer):
     assert customer.full_name() == "Mario Rossi"
+
