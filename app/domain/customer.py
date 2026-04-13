@@ -1,11 +1,8 @@
-import regex
 from app.domain.person import Person
 from app.domain.value_objects import Address
 
 
 class Customer(Person):
-    PHONE_REGEX = regex.compile(r"^\+?\d+$")
-
     def __init__(
         self,
         first_name: str,
@@ -15,14 +12,11 @@ class Customer(Person):
         address: Address,
         id: int | None = None,
     ):
-        super().__init__(first_name, last_name, email)
-        self._phone = self._validate_phone(phone)
+        super().__init__(first_name, last_name, email, phone)
         self._address = self._validate_address(address)
+        if id is not None and not isinstance(id, int):
+            raise TypeError(f"id must be an int, got {type(id).__name__}")
         self._id = id
-
-    @property
-    def phone(self) -> str:
-        return self._phone
 
     @property
     def address(self) -> Address:
@@ -51,16 +45,20 @@ class Customer(Person):
         """Replace the address with a new one."""
         self._address = self._validate_address(address)
 
-    @staticmethod
-    def _validate_phone(value: str) -> str:
-        if not isinstance(value, str):
-            raise TypeError(f"phone must be a string, got {type(value).__name__}")
-        normalized = value.strip()
-        if not normalized:
-            raise ValueError("phone cannot be empty")
-        if not Customer.PHONE_REGEX.match(normalized):
-            raise ValueError(f"Invalid phone format: {value!r}")
-        return normalized
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Customer):
+            return NotImplemented
+        if self._id is None or other._id is None:
+            return self is other
+        return self._id == other._id
+
+    __hash__ = None
+
+    def __repr__(self) -> str:
+        return f"Customer(id={self._id!r}, email={self._email!r})"
+
+    def __str__(self) -> str:
+        return f"{self.full_name} ({self._email})"
 
     @staticmethod
     def _validate_address(value: Address) -> Address:
