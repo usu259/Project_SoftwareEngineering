@@ -1,82 +1,82 @@
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.domain.customer import Customer
 from app.domain.value_objects import Address
-from app.repositories.mappings import customer_table
-
+from app.repositories.mapping.customer_mapping import CustomerRecord
 
 class CustomerRepository:
     def __init__(self, session: Session):
         self._session = session
 
     def get_by_id(self, customer_id: int) -> Customer | None:
-        row = self._session.execute(
-            select(customer_table).where(customer_table.c.id == customer_id)
-        ).fetchone()
-
-        if row is None:
+        record = self._session.get(CustomerRecord, customer_id)
+        if record is None:
             return None
-
-        return self._row_to_customer(row)
+        return self._to_domain(record)
 
     def get_by_email(self, email: str) -> Customer | None:
-        row = self._session.execute(
-            select(customer_table).where(customer_table.c.email == email.strip())
-        ).fetchone()
-
-        if row is None:
+        record = self._session.query(CustomerRecord).filter_by(email=email.strip()).first()
+        if record is None:
             return None
-
-        return self._row_to_customer(row)
+        return self._to_domain(record)
 
     def get_all(self) -> list[Customer]:
-        rows = self._session.execute(select(customer_table)).fetchall()
-        return [self._row_to_customer(row) for row in rows]
+        records = self._session.query(CustomerRecord).all()
+        return [self._to_domain(r) for r in records]
 
     def save(self, customer: Customer) -> None:
-        data = {
-            "first_name": customer.first_name,
-            "last_name": customer.last_name,
-            "email": customer.email,
-            "phone": customer.phone,
-            "street": customer.address.street,
-            "city": customer.address.city,
-            "zip_code": customer.address.zip_code,
-            "country": customer.address.country,
-        }
-
         if customer.id is None:
-            result = self._session.execute(
-                customer_table.insert().values(**data)
-            )
-            customer._id = result.inserted_primary_key[0]
+            record = self._to_model(customer)
+            self._session.add(record)
+            self._session.flush()         # genera l'id senza commit
+            customer._id = record.id
         else:
-            self._session.execute(
-                customer_table.update()
-                .where(customer_table.c.id == customer.id)
-                .values(**data)
-            )
+            record = self._session.get(CustomerRecord, customer.id)
+            if record is None:
+                raise ValueError(f"Customer {customer.id} not found")
+            self._update_record(record, customer)
 
     def delete(self, customer: Customer) -> None:
         if customer.id is None:
             raise ValueError("Cannot delete a customer that has not been persisted")
-        self._session.execute(
-            customer_table.delete().where(customer_table.c.id == customer.id)
+        record = self._session.get(CustomerRecord, customer.id)
+        if record is not None:
+            self._session.delete(record)
+
+    def _to_model(self, customer: Customer) -> CustomerRecord:
+        return CustomerRecord(
+            id=customer.id,
+            first_name=customer.first_name,
+            last_name=customer.last_name,
+            email=customer.email,
+            phone=customer.phone,
+            street=customer.address.street,
+            city=customer.address.city,
+            zip_code=customer.address.zip_code,
+            country=customer.address.country,
         )
 
-    def _row_to_customer(self, row) -> Customer:
-        address = Address(
-            street=row.street,
-            city=row.city,
-            zip_code=row.zip_code,
-            country=row.country,
-        )
+    def _to_domain(self, record: CustomerRecord) -> Customer:
         return Customer(
-            first_name=row.first_name,
-            last_name=row.last_name,
-            email=row.email,
-            phone=row.phone,
-            address=address,
-            id=row.id,
+            id=record.id,
+            first_name=record.first_name,
+            last_name=record.last_name,
+            email=record.email,
+            phone=record.phone,
+            address=Address(
+                street=record.street,
+                city=record.city,
+                zip_code=record.zip_code,
+                country=record.country,
+            ),
         )
+
+    def _update_record(self, record: CustomerRecord, customer: Customer) -> None:
+        record.first_name = customer.first_name
+        record.last_name = customer.last_name
+        record.email = customer.email
+        record.phone = customer.phone
+        record.street = customer.address.street
+        record.city = customer.address.city
+        record.zip_code = customer.address.zip_code
+        record.country = customer.address.country
