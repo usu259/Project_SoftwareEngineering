@@ -1,105 +1,188 @@
-# Domain Class Diagram
- 
 ```mermaid
 classDiagram
-    class Person {
-        <<abstract>>
-        +first_name: str
-        +last_name: str
-        +email: str
-        +phone: str
-        +address: Address
-        +id: int
-    }
  
-    class Customer {
-        +update_contact()
-        +update_name()
-        +update_address()
-    }
+%% ─── VALUE OBJECTS ───────────────────────────────────────────
+class Address {
+    <<value object>>
+    +street : str
+    +city : str
+    +zip_code : str
+    +country : str
+}
  
-    class Employee {
-        +role: EmployeeRole
-    }
+%% ─── PERSONS ──────────────────────────────────────────────────
+class Person {
+    <<abstract>>
+    #_first_name : str
+    #_last_name : str
+    #_email : str
+    +first_name() str
+    +last_name() str
+    +email() str
+    +full_name() str
+    +update_name(first_name, last_name) None
+    +update_email(email) None
+    #_validate_name(value, field) str
+    #_validate_email(value) str
+}
  
-    class WorkReport {
-        +work_date: date
-        +notes: str
-        +employee_id: int
-        +customer_id: int
-    }
+class Customer {
+    -_phone : str
+    -_address : Address
+    -_id : int | None
+    +phone() str
+    +address() Address
+    +id() int | None
+    +update_contact(email, phone) None
+    +update_address(address) None
+    #_validate_phone(value) str
+    #_validate_address(value) Address
+}
  
-    class Invoice {
-        +customer_id: int
-        +total: Decimal
-    }
+class Employee {
+    -_role : EmployeeRole
+    -_id : int | None
+    +role() EmployeeRole
+    +id() int | None
+    +update_role(role) None
+    #_validate_role(value) EmployeeRole
+}
  
-    class Position {
-        <<abstract>>
-        +work_date: date
-        +unit_price_at_entry: Decimal
-        +notes: str
-        +work_report_id: int
-        +stem_item_id: int
-        +calculate_subtotal() Decimal
-    }
+class EmployeeRole {
+    <<enumeration>>
+    GARDENER
+    BRICKLAYER
+    OWNER
+}
  
-    class LaborPosition {
-        +hours_worked: float
-    }
+Person <|-- Customer
+Person <|-- Employee
+Employee --> EmployeeRole
+Customer --> Address
  
-    class MaterialPosition {
-        +quantity: float
-        +unit_of_measure: str
-    }
+%% ─── CATALOGUE ENTITIES ──────────────────────────────────────
+class Material {
+    -_id : int | None
+    -_name : str
+    -_unit : str
+    -_cost_per_unit : float
+    +id() int | None
+    +name() str
+    +unit() str
+    +cost_per_unit() float
+    +update_price(cost_per_unit) None
+}
  
-    class StemItem {
-        <<abstract>>
-        +name: str
-        +unit_price: Decimal
-    }
+class Work {
+    -_id : int | None
+    -_name : str
+    -_cost_per_hour : float
+    -_employee : Employee
+    +id() int | None
+    +name() str
+    +cost_per_hour() float
+    +update_price(cost_per_hour) None
+}
  
-    class PersonnelRate {
-        +role: EmployeeRole
-        +rate_per_hour: Decimal
-    }
+Work --> Employee
  
-    class MaterialItem {
-        +unit_of_measure: str
-    }
+%% ─── POSITIONS (Strategy pattern) ───────────────────────────
+class Position {
+    <<abstract>>
+    +type() PositionType
+    +name() str
+    +description() str
+    +cost() float
+}
  
-    class Address {
-        <<value object>>
-        +street: str
-        +city: str
-        +zip_code: str
-        +country: str
-    }
+class PositionType {
+    <<enumeration>>
+    MATERIAL
+    WORK
+    TEXT
+}
  
-    class EmployeeRole {
-        <<enumeration>>
-        GARDENER
-        SUPERVISOR
-        DRIVER
-    }
+class MaterialPosition {
+    -_material : Material
+    -_cost_per_unit_at_entry : float
+    -_number_units : float
+    +cost() float
+}
  
-    Person <|-- Customer
-    Person <|-- Employee
-    Person *-- Address
+class WorkPosition {
+    -_work : Work
+    -_cost_per_hour_at_entry : float
+    -_number_hours : float
+    +cost() float
+}
  
-    Customer "1" --> "*" WorkReport : has reports
-    Customer "1" --> "*" Invoice : billed via
-    Employee "1" --> "*" WorkReport : creates
+class TextPosition {
+    -_name : str
+    -_description : str
+    -_total_cost : float
+    +cost() float
+}
  
-    Invoice "1" o-- "*" WorkReport : aggregates
-    WorkReport "1" *-- "1..*" Position : contains
+Position <|-- MaterialPosition
+Position <|-- WorkPosition
+Position <|-- TextPosition
+Position --> PositionType
+MaterialPosition --> Material
+WorkPosition --> Work
  
-    Position <|-- LaborPosition
-    Position <|-- MaterialPosition
-    Position "*" --> "0..1" StemItem : references
+%% ─── WORK REPORT ─────────────────────────────────────────────
+class WorkReport {
+    -_id : int | None
+    -_customer_id : int
+    -_invoice_id : int | None
+    -_employee_id : int
+    -_title : str
+    -_description : str
+    -_execution_date : date
+    -_deleted : bool
+    +id() int | None
+    +locked() bool
+    +assigned_to_invoice() bool
+    +add_position(position) None
+    +remove_position(position) None
+    +get_total_cost() float
+    +change_title(title) None
+    +change_description(description) None
+    +mark_deleted() None
+}
  
-    StemItem <|-- PersonnelRate
-    StemItem <|-- MaterialItem
+WorkReport "1" --> "0..*" Position : contains
  
-    Employee --> EmployeeRole
-```
+%% ─── INVOICE (Aggregate Root) ────────────────────────────────
+class Invoice {
+    -_id : int | None
+    -_customer_id : int
+    -_title : str
+    -_description : str
+    -_creation_date : date
+    -_status : InvoiceStatus
+    -_deleted : bool
+    +id() int | None
+    +locked() bool
+    +get_total_cost() float
+    +add_work_report(work_report) None
+    +remove_work_report(work_report) None
+    +change_status(status) None
+    +change_title(title) None
+    +mark_deleted() None
+}
+ 
+class InvoiceStatus {
+    <<enumeration>>
+    CREATED
+    SENT
+    PAID
+}
+ 
+Invoice --> InvoiceStatus
+Invoice --> Customer : billed to
+Invoice "1" --> "1..*" WorkReport : groups
+ 
+%% ─── OWNERSHIP NOTE ──────────────────────────────────────────
+Customer "1" --> "0..*" WorkReport : owns
+Customer "1" --> "0..*" Invoice : owns
