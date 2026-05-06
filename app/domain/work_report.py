@@ -1,6 +1,9 @@
 from datetime import date
 from decimal import Decimal
-from domain.position import Position
+from app.domain.position import Position
+from app.domain.exceptions import DuplicatePositionError, PositionNotFoundError
+from app.domain.validations import validate_text_field
+from config import MAX_WORK_REPORT_TITLE_LENGTH, MAX_WORK_REPORT_DESCRIPTION_LENGTH, MAX_WORK_REPORT_NOTES_LENGTH
 
 
 class WorkReport:
@@ -16,13 +19,19 @@ class WorkReport:
         id: int | None = None,
         positions: list[Position] | None = None,
     ):
+        if not isinstance(customer_id, int):
+            raise TypeError(f"customer_id must be an int, got {type(customer_id).__name__}")
+        if not isinstance(employee_id, int):
+            raise TypeError(f"employee_id must be an int, got {type(employee_id).__name__}")
+        if not isinstance(execution_date, date):
+            raise TypeError(f"execution_date must be a date, got {type(execution_date).__name__}")
         self._id = id
         self._customer_id = customer_id
         self._employee_id = employee_id
         self._invoice_id = invoice_id
-        self._title = title
-        self._description = description
-        self._notes = notes
+        self._title = validate_text_field(title, "title", MAX_WORK_REPORT_TITLE_LENGTH)
+        self._description = validate_text_field(description, "description", MAX_WORK_REPORT_DESCRIPTION_LENGTH)
+        self._notes = validate_text_field(notes, "notes", MAX_WORK_REPORT_NOTES_LENGTH) if notes is not None else None
         self._execution_date = execution_date
         self._positions: list[Position] = positions if positions is not None else []
 
@@ -69,14 +78,14 @@ class WorkReport:
         return sum((p.subtotal for p in self._positions), Decimal("0"))
 
     def add_position(self, position: Position) -> None:
-        if any(p.id == position.id for p in self._positions):
-            raise ValueError(f"Position {position.id} already exists in this WorkReport")
+        if position.id is not None and any(p.id == position.id for p in self._positions):
+            raise DuplicatePositionError(f"Position {position.id} already exists in this WorkReport")
         self._positions.append(position)
 
     def remove_position(self, position_id: int) -> None:
         match = next((p for p in self._positions if p.id == position_id), None)
         if match is None:
-            raise ValueError(f"Position {position_id} not found in this WorkReport")
+            raise PositionNotFoundError(f"Position {position_id} not found in this WorkReport")
         self._positions.remove(match)
 
     def __repr__(self) -> str:
