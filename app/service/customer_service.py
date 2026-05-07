@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-
 from app.domain.customer import Customer
 from app.domain.value_objects import Address
 from app.repositories.customer_repository import CustomerRepository
@@ -20,7 +19,6 @@ class CustomerService:
     ) -> Customer:
         if self._repo.get_by_email(email) is not None:
             raise ValueError(f"Email {email!r} is already in use")
-
         customer = Customer(
             first_name=first_name,
             last_name=last_name,
@@ -73,6 +71,6 @@ class CustomerService:
         customer.update_address(address)
         return customer
 
-    def delete_customer(self, customer_id: int) -> None:
-        customer = self.get_customer(customer_id)
-        self._repo.delete(customer)
+ #   def delete_customer(self, customer_id: int) -> None:
+#      customer = self.get_customer(customer_id)
+ #       self._repo.delete(customer)
