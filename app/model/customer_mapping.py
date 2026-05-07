@@ -1,10 +1,17 @@
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.repositories.base import Base
 
-from config import MAX_NAME_LENGTH
-from config import MAX_STREET_NAME_LENGTH, MAX_STREET_NUMBER_LENGTH, MAX_POSTAL_CODE_LENGTH, MAX_CITY_LENGTH, MAX_COUNTRY_LENGTH
-from config import MAX_PHONE_NUMBER_LENGTH, MAX_EMAIL_ADDRESS_LENGTH,MAX_CUSTOMER_NOTES_LENGTH
+from config import (
+    MAX_NAME_LENGTH,
+    MAX_STREET_NAME_LENGTH,
+    MAX_POSTAL_CODE_LENGTH,
+    MAX_CITY_LENGTH,
+    MAX_COUNTRY_LENGTH,
+    MAX_PHONE_NUMBER_LENGTH,
+    MAX_EMAIL_ADDRESS_LENGTH,
+)
+
 
 class CustomerRecord(Base):
     __tablename__ = "customers"
@@ -18,3 +25,7 @@ class CustomerRecord(Base):
     city: Mapped[str] = mapped_column(String(MAX_CITY_LENGTH), nullable=False)
     zip_code: Mapped[str] = mapped_column(String(MAX_POSTAL_CODE_LENGTH), nullable=False)
     country: Mapped[str] = mapped_column(String(MAX_COUNTRY_LENGTH), nullable=False)
+
+    invoice_records: Mapped[list["InvoiceRecord"]] = relationship(
+        back_populates="customer_record"
+    )

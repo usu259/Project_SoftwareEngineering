@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Work Reports</h1>
+<p><a href="{{ url_for('work_reports.create_work_report') }}">+ New work report</a></p>
+<table>
+    <tr><th>ID</th><th>Title</th><th>Customer</th><th>Employee</th><th>Date</th><th>Total</th><th></th></tr>
+    {% for wr in work_reports %}
+    <tr>
+        <td>{{ wr.id }}</td>
+        <td>{{ wr.title }}</td>
+        <td>{{ wr.customer_id }}</td>
+        <td>{{ wr.employee_id }}</td>
+        <td>{{ wr.execution_date }}</td>
+        <td>{{ wr.total_cost }}</td>
+        <td><a href="{{ url_for('work_reports.get_work_report', work_report_id=wr.id) }}">View</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7">No work reports.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

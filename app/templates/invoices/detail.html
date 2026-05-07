@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Invoice #{{ invoice.id }} — {{ invoice.title }}</h1>
+<p><strong>Customer:</strong> {{ invoice.customer_id }}</p>
+<p><strong>Status:</strong> {{ invoice.status.name }} | <strong>Date:</strong> {{ invoice.creation_date }}</p>
+<p>{{ invoice.description }}</p>
+{% if invoice.notes %}<p><em>{{ invoice.notes }}</em></p>{% endif %}
+
+<h2>Work Reports</h2>
+<table>
+    <tr><th>ID</th><th>Title</th><th>Date</th><th>Total</th></tr>
+    {% for wr in invoice.work_reports %}
+    <tr>
+        <td>{{ wr.id }}</td>
+        <td>{{ wr.title }}</td>
+        <td>{{ wr.execution_date }}</td>
+        <td>{{ wr.total_cost }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No work reports attached.</td></tr>
+    {% endfor %}
+</table>
+
+<p><strong>Subtotal:</strong> {{ invoice.total_cost }}</p>
+<p><strong>Total (with tax):</strong> {{ invoice.total_cost_with_tax }}</p>
+
+<div class="actions">
+    {% if invoice.status.name == 'CREATED' %}
+    <form method="post" action="{{ url_for('invoices.send_invoice', invoice_id=invoice.id) }}">
+        <button type="submit">Mark as sent</button>
+    </form>
+    {% endif %}
+    {% if invoice.status.name == 'SENT' %}
+    <form method="post" action="{{ url_for('invoices.pay_invoice', invoice_id=invoice.id) }}">
+        <button type="submit">Mark as paid</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

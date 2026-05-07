@@ -1,9 +1,9 @@
 from decimal import Decimal
 from datetime import date
 from sqlalchemy.orm import Session
-from domain.work_report import WorkReport
-from domain.position import MaterialPosition, PersonnelPosition
-from repositories.work_report_repository import WorkReportRepository
+from app.domain.work_report import WorkReport
+from app.domain.position import MaterialPosition, PersonnelPosition
+from app.repositories.work_report_repository import WorkReportRepository
 
 
 class WorkReportService:
@@ -47,7 +47,7 @@ class WorkReportService:
     def get_unassigned_work_reports(self, customer_id: int) -> list[WorkReport]:
         return self._repo.get_unassigned(customer_id)
 
-    # --- Position management ---
+    # Position management
     def add_personnel_position(
         self,
         work_report_id: int,

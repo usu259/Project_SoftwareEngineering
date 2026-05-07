@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.domain.customer import Customer
 from app.domain.value_objects import Address
-from app.repositories.mapping.customer_mapping import CustomerRecord
+from app.model.customer_mapping import CustomerRecord
 
 class CustomerRepository:
     def __init__(self, session: Session):

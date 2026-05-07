@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 
 from app.domain.employee import Employee, EmployeeRole
-from app.repositories.mapping.employee_mapping import EmployeeRecord
+from app.model.employee_mapping import EmployeeRecord
+
 
 class EmployeeRepository:
     def __init__(self, session: Session):
@@ -26,7 +27,7 @@ class EmployeeRepository:
     def get_by_role(self, role: EmployeeRole) -> list[Employee]:
         records = (
             self._session.query(EmployeeRecord)
-            .filter_by(role=role)
+            .filter_by(role=role.value)
             .all()
         )
         return [self._to_domain(r) for r in records]
@@ -61,7 +62,7 @@ class EmployeeRepository:
             last_name=employee.last_name,
             email=employee.email,
             phone=employee.phone,
-            role=employee.role,
+            role=employee.role.value,
         )
 
     def _to_domain(self, record: EmployeeRecord) -> Employee:
@@ -71,7 +72,7 @@ class EmployeeRepository:
             last_name=record.last_name,
             email=record.email,
             phone=record.phone,
-            role=record.role,
+            role=EmployeeRole(record.role),
         )
 
     def _update_record(self, record: EmployeeRecord, employee: Employee) -> None:
@@ -79,4 +80,4 @@ class EmployeeRepository:
         record.last_name = employee.last_name
         record.email = employee.email
         record.phone = employee.phone
-        record.role = employee.role
+        record.role = employee.role.value

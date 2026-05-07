@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from domain.invoice import Invoice, InvoiceStatus
-from domain.work_report import WorkReport
-from repositories.invoice_repository import InvoiceRepository
-from repositories.work_report_repository import WorkReportRepository
+from app.domain.invoice import Invoice, InvoiceStatus
+from app.domain.work_report import WorkReport
+from app.repositories.invoice_repository import InvoiceRepository
+from app.repositories.work_report_repository import WorkReportRepository
 
 class InvoiceService:
     def __init__(self, session: Session):

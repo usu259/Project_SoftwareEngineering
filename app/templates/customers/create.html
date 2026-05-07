@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>New Customer</h1>
+<form method="post">
+    <label>First name <input name="first_name" required></label>
+    <label>Last name <input name="last_name" required></label>
+    <label>Email <input name="email" type="email" required></label>
+    <label>Phone <input name="phone" required></label>
+    <label>Street <input name="street" required></label>
+    <label>City <input name="city" required></label>
+    <label>ZIP code <input name="zip_code" required></label>
+    <label>Country <input name="country" required></label>
+    <button type="submit">Create</button>
+</form>
+{% endblock %}

@@ -5,7 +5,7 @@ from app.domain.exceptions import InvalidAttributeValueError
 
 class Position(ABC):
     def __init__(
-    self,
+        self,
         id: int | None = None,
         description: str | None = None,
     ):
@@ -26,7 +26,7 @@ class Position(ABC):
         ...
 
 
-class EmployeePosition(Position):
+class PersonnelPosition(Position):
     def __init__(
         self,
         hours: Decimal,
@@ -55,7 +55,7 @@ class EmployeePosition(Position):
         return self._hours * self._hourly_rate
 
     def __repr__(self) -> str:
-        return f"EmployeePosition(id={self._id!r}, hours={self._hours}, rate={self._hourly_rate})"
+        return f"PersonnelPosition(id={self._id!r}, hours={self._hours}, rate={self._hourly_rate})"
 
 
 class MaterialPosition(Position):

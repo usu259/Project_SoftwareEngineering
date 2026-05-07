@@ -16,9 +16,10 @@ from config import (
     MAX_INVOICE_TITLE_LENGTH,
     MAX_INVOICE_DESCRIPTION_LENGTH,
     MAX_INVOICE_NOTES_LENGTH,
+    TAX_RATE
 )
 
-_TAX_RATE = Decimal("1.081")
+
 
 
 class InvoiceStatus(Enum):
@@ -103,7 +104,7 @@ class Invoice:
 
     @property
     def total_cost_with_tax(self) -> Decimal:
-        return self.total_cost * _TAX_RATE
+        return self.total_cost * TAX_RATE
 
     # Edit attributes
     def change_title(self, title: str) -> None:

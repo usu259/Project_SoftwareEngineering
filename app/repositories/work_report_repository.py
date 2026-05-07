@@ -1,9 +1,9 @@
-from sqlalchemy.orm import Session
-from domain.work_report import WorkReport
-from domain.position import PersonnelPosition, MaterialPosition
-from repositories.mapping.work_report_mapping import WorkReportRecord
-from repositories.mapping.position_mapping import PersonnelPositionRecord, MaterialPositionRecord
 from decimal import Decimal
+from sqlalchemy.orm import Session
+from app.domain.work_report import WorkReport
+from app.domain.position import PersonnelPosition, MaterialPosition
+from app.model.work_report_mapping import WorkReportRecord
+from app.model.position_mapping import PersonnelPositionRecord, MaterialPositionRecord
 
 
 class WorkReportRepository:
@@ -25,9 +25,11 @@ class WorkReportRepository:
         return [self._to_domain(r) for r in records]
 
     def get_unassigned(self, customer_id: int) -> list[WorkReport]:
-        records = (self._session.query(WorkReportRecord)
-                   .filter_by(customer_id=customer_id, invoice_id=None)
-                   .all())
+        records = (
+            self._session.query(WorkReportRecord)
+            .filter_by(customer_id=customer_id, invoice_id=None)
+            .all()
+        )
         return [self._to_domain(r) for r in records]
 
     def save(self, work_report: WorkReport) -> None:
@@ -43,7 +45,7 @@ class WorkReportRepository:
             self._update_record(record, work_report)
 
     def _to_model(self, work_report: WorkReport) -> WorkReportRecord:
-        return WorkReportRecord(
+        record = WorkReportRecord(
             customer_id=work_report.customer_id,
             employee_id=work_report.employee_id,
             invoice_id=work_report.invoice_id,
@@ -53,11 +55,29 @@ class WorkReportRepository:
             execution_date=work_report.execution_date,
             deleted=False,
         )
+        for p in work_report.positions:
+            if isinstance(p, PersonnelPosition):
+                record.personnel_position_records.append(
+                    PersonnelPositionRecord(
+                        description=p.description,
+                        hours=p.hours,
+                        hourly_rate=p.hourly_rate,
+                    )
+                )
+            elif isinstance(p, MaterialPosition):
+                record.material_position_records.append(
+                    MaterialPositionRecord(
+                        description=p.description,
+                        quantity=p.quantity,
+                        unit_price=p.unit_price,
+                    )
+                )
+        return record
 
     def _to_domain(self, record: WorkReportRecord) -> WorkReport:
         positions = (
-            [self._personnel_to_domain(p) for p in record.personnel_position_records] +
-            [self._material_to_domain(m) for m in record.material_position_records]
+            [self._personnel_to_domain(p) for p in record.personnel_position_records]
+            + [self._material_to_domain(m) for m in record.material_position_records]
         )
         return WorkReport(
             id=record.id,
@@ -80,18 +100,38 @@ class WorkReportRepository:
         record.notes = work_report.notes
         record.execution_date = work_report.execution_date
 
+        record.personnel_position_records.clear()
+        record.material_position_records.clear()
+        for p in work_report.positions:
+            if isinstance(p, PersonnelPosition):
+                record.personnel_position_records.append(
+                    PersonnelPositionRecord(
+                        description=p.description,
+                        hours=p.hours,
+                        hourly_rate=p.hourly_rate,
+                    )
+                )
+            elif isinstance(p, MaterialPosition):
+                record.material_position_records.append(
+                    MaterialPositionRecord(
+                        description=p.description,
+                        quantity=p.quantity,
+                        unit_price=p.unit_price,
+                    )
+                )
+
     def _personnel_to_domain(self, record: PersonnelPositionRecord) -> PersonnelPosition:
         return PersonnelPosition(
             id=record.id,
-            hours=record.hours,
-            hourly_rate=record.hourly_rate,
+            hours=Decimal(record.hours),
+            hourly_rate=Decimal(record.hourly_rate),
             description=record.description,
         )
 
     def _material_to_domain(self, record: MaterialPositionRecord) -> MaterialPosition:
         return MaterialPosition(
             id=record.id,
-            quantity=record.quantity,
-            unit_price=record.unit_price,
+            quantity=Decimal(record.quantity),
+            unit_price=Decimal(record.unit_price),
             description=record.description,
         )

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ work_report.title }}</h1>
+<p><strong>Date:</strong> {{ work_report.execution_date }}</p>
+<p><strong>Customer:</strong> {{ work_report.customer_id }} | <strong>Employee:</strong> {{ work_report.employee_id }}</p>
+<p>{{ work_report.description }}</p>
+{% if work_report.notes %}<p><em>{{ work_report.notes }}</em></p>{% endif %}
+
+<h2>Positions (total: {{ work_report.total_cost }})</h2>
+<table>
+    <tr><th>ID</th><th>Type</th><th>Description</th><th>Subtotal</th><th></th></tr>
+    {% for p in work_report.positions %}
+    <tr>
+        <td>{{ p.id }}</td>
+        <td>{{ p.__class__.__name__ }}</td>
+        <td>{{ p.description or '-' }}</td>
+        <td>{{ p.subtotal }}</td>
+        <td>
+            <form method="post" action="{{ url_for('work_reports.remove_position', work_report_id=work_report.id, position_id=p.id) }}">
+                <button type="submit">Remove</button>
+            </form>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No positions yet.</td></tr>
+    {% endfor %}
+</table>
+
+<h3>Add personnel position</h3>
+<form method="post" action="{{ url_for('work_reports.add_personnel_position', work_report_id=work_report.id) }}">
+    <label>Hours <input name="hours" type="number" step="0.01" required></label>
+    <label>Hourly rate <input name="hourly_rate" type="number" step="0.01" required></label>
+    <label>Description <input name="description"></label>
+    <button type="submit">Add personnel</button>
+</form>
+
+<h3>Add material position</h3>
+<form method="post" action="{{ url_for('work_reports.add_material_position', work_report_id=work_report.id) }}">
+    <label>Quantity <input name="quantity" type="number" step="0.01" required></label>
+    <label>Unit price <input name="unit_price" type="number" step="0.01" required></label>
+    <label>Description <input name="description"></label>
+    <button type="submit">Add material</button>
+</form>
+{% endblock %}

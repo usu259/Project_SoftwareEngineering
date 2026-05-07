@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>New Work Report</h1>
+<form method="post">
+    <label>Customer
+        <select name="customer_id" required>
+            {% for c in customers %}
+                <option value="{{ c.id }}">{{ c.full_name }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Employee
+        <select name="employee_id" required>
+            {% for e in employees %}
+                <option value="{{ e.id }}">{{ e.full_name }} ({{ e.role.value }})</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Title <input name="title" required></label>
+    <label>Description <textarea name="description" required></textarea></label>
+    <label>Execution date <input name="execution_date" type="date" required></label>
+    <label>Notes <textarea name="notes"></textarea></label>
+    <button type="submit">Create</button>
+</form>
+{% endblock %}
