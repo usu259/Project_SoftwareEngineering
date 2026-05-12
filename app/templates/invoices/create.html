@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>New Invoice</h1>
+<form method="post">
+    <label>Customer
+        <select name="customer_id" required>
+            {% for c in customers %}
+                <option value="{{ c.id }}">{{ c.full_name }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>Title <input name="title" required></label>
+    <label>Description <textarea name="description" required></textarea></label>
+    <label>Notes <textarea name="notes"></textarea></label>
+    <button type="submit">Create</button>
+</form>
+{% endblock %}

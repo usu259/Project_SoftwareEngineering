@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ customer.full_name }}</h1>
+<p><strong>Email:</strong> {{ customer.email }}</p>
+<p><strong>Phone:</strong> {{ customer.phone }}</p>
+<p><strong>Address:</strong>
+    {{ customer.address.street }}, {{ customer.address.zip_code }} {{ customer.address.city }}, {{ customer.address.country }}
+</p>
+<p>
+    <a href="{{ url_for('customers.edit_customer', customer_id=customer.id) }}">Edit</a> |
+    <a href="{{ url_for('customers.list_customers') }}">Back to list</a>
+</p>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Edit Customer: {{ customer.full_name }}</h1>
+<form method="post">
+    <label>Email <input name="email" type="email" value="{{ customer.email }}" required></label>
+    <label>Phone <input name="phone" value="{{ customer.phone }}" required></label>
+    <label>Street <input name="street" value="{{ customer.address.street }}" required></label>
+    <label>City <input name="city" value="{{ customer.address.city }}" required></label>
+    <label>ZIP code <input name="zip_code" value="{{ customer.address.zip_code }}" required></label>
+    <label>Country <input name="country" value="{{ customer.address.country }}" required></label>
+    <button type="submit">Save</button>
+</form>
+{% endblock %}

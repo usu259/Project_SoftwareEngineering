@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Invoices</h1>
+<p><a href="{{ url_for('invoices.create_invoice') }}">+ New invoice</a></p>
+<table>
+    <tr><th>ID</th><th>Title</th><th>Customer</th><th>Status</th><th>Date</th><th>Total</th><th></th></tr>
+    {% for inv in invoices %}
+    <tr>
+        <td>{{ inv.id }}</td>
+        <td>{{ inv.title }}</td>
+        <td>{{ inv.customer_id }}</td>
+        <td>{{ inv.status.name }}</td>
+        <td>{{ inv.creation_date }}</td>
+        <td>{{ inv.total_cost_with_tax }}</td>
+        <td><a href="{{ url_for('invoices.get_invoice', invoice_id=inv.id) }}">View</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7">No invoices.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

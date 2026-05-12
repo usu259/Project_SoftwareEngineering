@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Billing App</h1>
+<p>Manage customers, work reports, and invoices.</p>
+<ul>
+    <li><a href="{{ url_for('customers.list_customers') }}">Customers</a></li>
+    <li><a href="{{ url_for('work_reports.list_work_reports') }}">Work Reports</a></li>
+    <li><a href="{{ url_for('invoices.list_invoices') }}">Invoices</a></li>
+</ul>
+{% endblock %}
