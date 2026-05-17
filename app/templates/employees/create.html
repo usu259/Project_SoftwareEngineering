@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}New Employee{% endblock %}
+{% block content %}
+<h1>New Employee</h1>
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+  {% if messages %}<p style="color:red">{{ messages[0] }}</p>{% endif %}
+{% endwith %}
+<form method="post">
+    <label>First name <input name="first_name" required></label><br>
+    <label>Last name <input name="last_name" required></label><br>
+    <label>Email <input name="email" type="email" required></label><br>
+    <label>Phone <input name="phone" required></label><br>
+    <label>Role
+        <select name="role" required>
+            {% for role in roles %}
+            <option value="{{ role.value }}">{{ role.value }}</option>
+            {% endfor %}
+        </select>
+    </label><br>
+    <button type="submit">Create</button>
+</form>
+<a href="{{ url_for('employees.list_employees') }}">Cancel</a>
+{% endblock %}

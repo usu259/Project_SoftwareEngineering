@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Employees{% endblock %}
+{% block content %}
+<h1>Employees</h1>
+<a href="{{ url_for('employees.create_employee') }}">+ New Employee</a>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th></tr>
+    {% for emp in employees %}
+    <tr>
+        <td>{{ emp.id }}</td>
+        <td>{{ emp.full_name }}</td>
+        <td>{{ emp.email }}</td>
+        <td>{{ emp.phone }}</td>
+        <td>{{ emp.role.value }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No employees found.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

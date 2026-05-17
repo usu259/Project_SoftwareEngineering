@@ -21,6 +21,7 @@
         <a href="{{ url_for('customers.list_customers') }}">Customers</a>
         <a href="{{ url_for('work_reports.list_work_reports') }}">Work Reports</a>
         <a href="{{ url_for('invoices.list_invoices') }}">Invoices</a>
+        <a href="{{ url_for('employees.list_employees') }}">Employees</a>
     </nav>
     <hr>
     {% with messages = get_flashed_messages(with_categories=true) %}

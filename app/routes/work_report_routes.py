@@ -53,6 +53,27 @@ def get_work_report(work_report_id: int):
     return render_template("work_reports/detail.html", work_report=work_report)
 
 
+@work_report_bp.route("/<int:work_report_id>/edit", methods=["GET", "POST"])
+def edit_work_report(work_report_id: int):
+    if request.method == "POST":
+        try:
+            with Session(engine) as session:
+                WorkReportService(session).update_work_report(
+                    work_report_id=work_report_id,
+                    title=request.form.get("title"),
+                    description=request.form.get("description"),
+                    execution_date=date.fromisoformat(request.form.get("execution_date")),
+                    notes=request.form.get("notes") or None,
+                )
+                session.commit()
+            return redirect(url_for("work_reports.get_work_report", work_report_id=work_report_id))
+        except (DomainError, ValueError, TypeError) as e:
+            flash(str(e), "error")
+    with Session(engine) as session:
+        work_report = WorkReportService(session).get_work_report(work_report_id)
+    return render_template("work_reports/edit.html", work_report=work_report)
+
+
 @work_report_bp.route("/<int:work_report_id>/add-personnel", methods=["POST"])
 def add_personnel_position(work_report_id: int):
     try:
