@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>{{ work_report.title }}</h1>
+<h1>{{ work_report.title }} <a href="{{ url_for('work_reports.edit_work_report', work_report_id=work_report.id) }}">Edit</a></h1>
 <p><strong>Date:</strong> {{ work_report.execution_date }}</p>
 <p><strong>Customer:</strong> {{ work_report.customer_id }} | <strong>Employee:</strong> {{ work_report.employee_id }}</p>
 <p>{{ work_report.description }}</p>

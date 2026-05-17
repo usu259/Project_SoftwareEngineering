@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Edit Work Report{% endblock %}
+{% block content %}
+<h1>Edit Work Report</h1>
+{% with messages = get_flashed_messages(category_filter=["error"]) %}
+  {% if messages %}<p style="color:red">{{ messages[0] }}</p>{% endif %}
+{% endwith %}
+<form method="post">
+    <label>Title <input name="title" value="{{ work_report.title }}" required></label>
+    <label>Description <textarea name="description" required>{{ work_report.description }}</textarea></label>
+    <label>Date <input name="execution_date" type="date" value="{{ work_report.execution_date }}" required></label>
+    <label>Notes <textarea name="notes">{{ work_report.notes or '' }}</textarea></label>
+    <button type="submit">Save</button>
+</form>
+<a href="{{ url_for('work_reports.get_work_report', work_report_id=work_report.id) }}">Cancel</a>
+{% endblock %}

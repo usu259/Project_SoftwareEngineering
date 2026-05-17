@@ -1,6 +1,8 @@
+from decimal import Decimal
 from sqlalchemy.orm import Session
 from app.domain.invoice import Invoice, InvoiceStatus
 from app.domain.work_report import WorkReport
+from app.domain.position import PersonnelPosition, MaterialPosition
 from app.model.invoice_mapping import InvoiceRecord
 from app.model.work_report_mapping import WorkReportRecord
 
@@ -68,7 +70,25 @@ class InvoiceRepository:
         record.creation_date = invoice.creation_date
         record.deleted = invoice.deleted
 
+        new_ids = {wr.id for wr in invoice.work_reports}
+        for wr_record in list(record.work_report_records):
+            if wr_record.id not in new_ids:
+                wr_record.invoice_id = None
+                record.work_report_records.remove(wr_record)
+        existing_ids = {wr_record.id for wr_record in record.work_report_records}
+        for wr in invoice.work_reports:
+            if wr.id not in existing_ids:
+                wr_record = self._session.get(WorkReportRecord, wr.id)
+                if wr_record:
+                    record.work_report_records.append(wr_record)
+
     def _work_report_to_domain(self, record: WorkReportRecord) -> WorkReport:
+        positions = (
+            [PersonnelPosition(id=p.id, hours=Decimal(p.hours), hourly_rate=Decimal(p.hourly_rate), description=p.description)
+             for p in record.personnel_position_records]
+            + [MaterialPosition(id=p.id, quantity=Decimal(p.quantity), unit_price=Decimal(p.unit_price), description=p.description)
+               for p in record.material_position_records]
+        )
         return WorkReport(
             id=record.id,
             customer_id=record.customer_id,
@@ -78,4 +98,5 @@ class InvoiceRepository:
             notes=record.notes,
             execution_date=record.execution_date,
             invoice_id=record.invoice_id,
+            positions=positions,
         )

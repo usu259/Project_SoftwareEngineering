@@ -44,6 +44,22 @@ class WorkReportService:
     def get_work_reports_by_customer(self, customer_id: int) -> list[WorkReport]:
         return self._repo.get_by_customer(customer_id)
 
+    def update_work_report(
+        self,
+        work_report_id: int,
+        title: str,
+        description: str,
+        execution_date: date,
+        notes: str | None = None,
+    ) -> WorkReport:
+        work_report = self.get_work_report(work_report_id)
+        work_report.change_title(title)
+        work_report.change_description(description)
+        work_report.change_execution_date(execution_date)
+        work_report.change_notes(notes)
+        self._repo.save(work_report)
+        return work_report
+
     def get_unassigned_work_reports(self, customer_id: int) -> list[WorkReport]:
         return self._repo.get_unassigned(customer_id)
 

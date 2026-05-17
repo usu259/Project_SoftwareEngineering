@@ -77,6 +77,20 @@ class WorkReport:
     def total_cost(self) -> Decimal:
         return sum((p.subtotal for p in self._positions), Decimal("0"))
 
+    def change_title(self, title: str) -> None:
+        self._title = validate_text_field(title, "title", MAX_WORK_REPORT_TITLE_LENGTH)
+
+    def change_description(self, description: str) -> None:
+        self._description = validate_text_field(description, "description", MAX_WORK_REPORT_DESCRIPTION_LENGTH)
+
+    def change_notes(self, notes: str | None) -> None:
+        self._notes = validate_text_field(notes, "notes", MAX_WORK_REPORT_NOTES_LENGTH) if notes is not None else None
+
+    def change_execution_date(self, execution_date: date) -> None:
+        if not isinstance(execution_date, date):
+            raise TypeError(f"execution_date must be a date, got {type(execution_date).__name__}")
+        self._execution_date = execution_date
+
     def add_position(self, position: Position) -> None:
         if position.id is not None and any(p.id == position.id for p in self._positions):
             raise DuplicatePositionError(f"Position {position.id} already exists in this WorkReport")

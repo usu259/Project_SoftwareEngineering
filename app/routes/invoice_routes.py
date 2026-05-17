@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import engine
 from app.service.invoice_service import InvoiceService
 from app.service.customer_service import CustomerService
+from app.service.work_report_service import WorkReportService
 from app.domain.exceptions import DomainError
 
 invoice_bp = Blueprint("invoices", __name__, url_prefix="/invoices")
@@ -42,7 +43,32 @@ def get_invoice(invoice_id: int):
     with Session(engine) as session:
         service = InvoiceService(session)
         invoice = service.get_invoice(invoice_id)
-    return render_template("invoices/detail.html", invoice=invoice)
+        unassigned = WorkReportService(session).get_unassigned_work_reports(invoice.customer_id)
+    return render_template("invoices/detail.html", invoice=invoice, unassigned_work_reports=unassigned)
+
+
+@invoice_bp.route("/<int:invoice_id>/add-work-report", methods=["POST"])
+def add_work_report(invoice_id: int):
+    try:
+        with Session(engine) as session:
+            service = InvoiceService(session)
+            service.add_work_report(invoice_id, int(request.form.get("work_report_id")))
+            session.commit()
+    except (DomainError, ValueError, TypeError) as e:
+        flash(str(e), "error")
+    return redirect(url_for("invoices.get_invoice", invoice_id=invoice_id))
+
+
+@invoice_bp.route("/<int:invoice_id>/remove-work-report/<int:work_report_id>", methods=["POST"])
+def remove_work_report(invoice_id: int, work_report_id: int):
+    try:
+        with Session(engine) as session:
+            service = InvoiceService(session)
+            service.remove_work_report(invoice_id, work_report_id)
+            session.commit()
+    except (DomainError, ValueError, TypeError) as e:
+        flash(str(e), "error")
+    return redirect(url_for("invoices.get_invoice", invoice_id=invoice_id))
 
 
 @invoice_bp.route("/<int:invoice_id>/send", methods=["POST"])

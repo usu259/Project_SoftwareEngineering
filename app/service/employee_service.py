@@ -14,6 +14,7 @@ class EmployeeService:
         first_name: str,
         last_name: str,
         email: str,
+        phone: str,
         role: EmployeeRole,
     ) -> Employee:
         if self._repo.get_by_email(email) is not None:
@@ -23,6 +24,7 @@ class EmployeeService:
             first_name=first_name,
             last_name=last_name,
             email=email,
+            phone=phone,
             role=role,
         )
         self._repo.save(employee)

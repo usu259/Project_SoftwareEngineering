@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from decimal import Decimal
 from app.domain.exceptions import InvalidAttributeValueError
 
-
 class Position(ABC):
     def __init__(
         self,
