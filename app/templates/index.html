@@ -1,11 +1,30 @@
 {% extends 'base.html' %}
+{% block title %}Dashboard — Billing App{% endblock %}
 {% block content %}
-<h1>Billing App</h1>
-<p>Manage customers, employees, work reports, and invoices.</p>
-<ul>
-    <li><a href="{{ url_for('customers.list_customers') }}">Customers</a></li>
-    <li><a href="{{ url_for('employees.list_employees') }}">Employees</a></li>
-    <li><a href="{{ url_for('work_reports.list_work_reports') }}">Work Reports</a></li>
-    <li><a href="{{ url_for('invoices.list_invoices') }}">Invoices</a></li>
-</ul>
+<div class="page-header">
+    <h1>Dashboard</h1>
+</div>
+
+<div class="dashboard-grid">
+    <a class="stat-card" href="{{ url_for('customers.list_customers') }}">
+        <div class="stat-icon">&#x1F465;</div>
+        <div class="stat-label">Customers</div>
+        <div class="stat-value">&#x2192;</div>
+    </a>
+    <a class="stat-card" href="{{ url_for('employees.list_employees') }}">
+        <div class="stat-icon">&#x1F477;</div>
+        <div class="stat-label">Employees</div>
+        <div class="stat-value">&#x2192;</div>
+    </a>
+    <a class="stat-card" href="{{ url_for('work_reports.list_work_reports') }}">
+        <div class="stat-icon">&#x1F4CB;</div>
+        <div class="stat-label">Work Reports</div>
+        <div class="stat-value">&#x2192;</div>
+    </a>
+    <a class="stat-card" href="{{ url_for('invoices.list_invoices') }}">
+        <div class="stat-icon">&#x1F4B3;</div>
+        <div class="stat-label">Invoices</div>
+        <div class="stat-value">&#x2192;</div>
+    </a>
+</div>
 {% endblock %}

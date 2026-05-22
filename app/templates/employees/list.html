@@ -1,20 +1,44 @@
 {% extends 'base.html' %}
 {% block title %}Employees{% endblock %}
 {% block content %}
-<h1>Employees</h1>
-<a href="{{ url_for('employees.create_employee') }}">+ New Employee</a>
-<table>
-    <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th></tr>
-    {% for emp in employees %}
-    <tr>
-        <td>{{ emp.id }}</td>
-        <td>{{ emp.full_name }}</td>
-        <td>{{ emp.email }}</td>
-        <td>{{ emp.phone }}</td>
-        <td>{{ emp.role.value }}</td>
-    </tr>
-    {% else %}
-    <tr><td colspan="5">No employees found.</td></tr>
-    {% endfor %}
-</table>
+<div class="page-header">
+    <h1>Employees</h1>
+    <a class="btn btn-primary" href="{{ url_for('employees.create_employee') }}">+ New Employee</a>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emp in employees %}
+                <tr>
+                    <td>{{ emp.id }}</td>
+                    <td><strong><a href="{{ url_for('employees.get_employee', employee_id=emp.id) }}">{{ emp.full_name }}</a></strong></td>
+                    <td><span class="badge badge-gray">{{ emp.role.value }}</span></td>
+                    <td>{{ emp.email }}</td>
+                    <td>{{ emp.phone }}</td>
+                    <td>
+                        <div class="td-actions">
+                            <a class="btn btn-secondary btn-sm" href="{{ url_for('employees.get_employee', employee_id=emp.id) }}">View</a>
+                            <a class="btn btn-secondary btn-sm" href="{{ url_for('employees.edit_employee', employee_id=emp.id) }}">Edit</a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6"><div class="empty-state"><p>No employees yet.</p><a class="btn btn-primary" href="{{ url_for('employees.create_employee') }}">Add your first employee</a></div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

@@ -32,3 +32,43 @@ def create_employee():
         except (DomainError, ValueError, TypeError) as e:
             flash(str(e), "error")
     return render_template("employees/create.html", roles=list(EmployeeRole))
+
+
+@employee_bp.route("/<int:employee_id>", methods=["GET"])
+def get_employee(employee_id: int):
+    with Session(engine) as session:
+        employee = EmployeeService(session).get_employee(employee_id)
+    return render_template("employees/detail.html", employee=employee)
+
+
+@employee_bp.route("/<int:employee_id>/edit", methods=["GET", "POST"])
+def edit_employee(employee_id: int):
+    if request.method == "POST":
+        try:
+            with Session(engine) as session:
+                service = EmployeeService(session)
+                service.update_employee_name(
+                    employee_id,
+                    first_name=request.form.get("first_name"),
+                    last_name=request.form.get("last_name"),
+                )
+                service.update_employee_email(employee_id, request.form.get("email"))
+                service.update_employee_role(employee_id, EmployeeRole(request.form.get("role")))
+                session.commit()
+            return redirect(url_for("employees.get_employee", employee_id=employee_id))
+        except (DomainError, ValueError, TypeError) as e:
+            flash(str(e), "error")
+    with Session(engine) as session:
+        employee = EmployeeService(session).get_employee(employee_id)
+    return render_template("employees/edit.html", employee=employee, roles=list(EmployeeRole))
+
+
+@employee_bp.route("/<int:employee_id>/delete", methods=["POST"])
+def delete_employee(employee_id: int):
+    try:
+        with Session(engine) as session:
+            EmployeeService(session).delete_employee(employee_id)
+            session.commit()
+    except (DomainError, ValueError, TypeError) as e:
+        flash(str(e), "error")
+    return redirect(url_for("employees.list_employees"))

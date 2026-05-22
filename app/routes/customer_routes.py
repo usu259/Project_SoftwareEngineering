@@ -55,6 +55,11 @@ def edit_customer(customer_id: int):
         try:
             with Session(engine) as session:
                 service = CustomerService(session)
+                service.update_customer_name(
+                    customer_id=customer_id,
+                    first_name=request.form.get("first_name"),
+                    last_name=request.form.get("last_name"),
+                )
                 service.update_customer_contact(
                     customer_id=customer_id,
                     email=request.form.get("email"),

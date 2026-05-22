@@ -1,13 +1,40 @@
 {% extends 'base.html' %}
+{% block title %}{{ customer.full_name }}{% endblock %}
 {% block content %}
-<h1>{{ customer.full_name }}</h1>
-<p><strong>Email:</strong> {{ customer.email }}</p>
-<p><strong>Phone:</strong> {{ customer.phone }}</p>
-<p><strong>Address:</strong>
-    {{ customer.address.street }}, {{ customer.address.zip_code }} {{ customer.address.city }}, {{ customer.address.country }}
-</p>
-<p>
-    <a href="{{ url_for('customers.edit_customer', customer_id=customer.id) }}">Edit</a> |
-    <a href="{{ url_for('customers.list_customers') }}">Back to list</a>
-</p>
+<div class="page-header">
+    <h1>{{ customer.full_name }}</h1>
+    <div style="display:flex;gap:8px">
+        <a class="btn btn-secondary" href="{{ url_for('customers.edit_customer', customer_id=customer.id) }}">Edit</a>
+        <a class="btn btn-secondary" href="{{ url_for('customers.list_customers') }}">Back to list</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Contact</div>
+    <div class="card-body">
+        <div class="detail-row">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ customer.email }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Phone</span>
+            <span class="detail-value">{{ customer.phone }}</span>
+        </div>
+    </div>
+    <div class="card-header" style="border-top:1px solid var(--gray-200)">Address</div>
+    <div class="card-body">
+        <div class="detail-row">
+            <span class="detail-label">Street</span>
+            <span class="detail-value">{{ customer.address.street }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">City</span>
+            <span class="detail-value">{{ customer.address.zip_code }} {{ customer.address.city }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Country</span>
+            <span class="detail-value">{{ customer.address.country }}</span>
+        </div>
+    </div>
+</div>
 {% endblock %}
