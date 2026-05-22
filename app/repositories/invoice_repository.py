@@ -18,11 +18,11 @@ class InvoiceRepository:
         return self._to_domain(record)
 
     def get_all(self) -> list[Invoice]:
-        records = self._session.query(InvoiceRecord).all()
+        records = self._session.query(InvoiceRecord).filter_by(deleted=False).all()
         return [self._to_domain(r) for r in records]
 
     def get_by_customer(self, customer_id: int) -> list[Invoice]:
-        records = self._session.query(InvoiceRecord).filter_by(customer_id=customer_id).all()
+        records = self._session.query(InvoiceRecord).filter_by(customer_id=customer_id, deleted=False).all()
         return [self._to_domain(r) for r in records]
 
     def save(self, invoice: Invoice) -> None:

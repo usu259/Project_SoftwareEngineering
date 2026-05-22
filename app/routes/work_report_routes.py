@@ -14,9 +14,10 @@ work_report_bp = Blueprint("work_reports", __name__, url_prefix="/work-reports")
 @work_report_bp.route("/", methods=["GET"])
 def list_work_reports():
     with Session(engine) as session:
-        service = WorkReportService(session)
-        work_reports = service.get_all_work_reports()
-    return render_template("work_reports/list.html", work_reports=work_reports)
+        work_reports = WorkReportService(session).get_all_work_reports()
+        customers = {c.id: c.full_name for c in CustomerService(session).get_all_customers()}
+        employees = {e.id: e.full_name for e in EmployeeService(session).get_all_employees()}
+    return render_template("work_reports/list.html", work_reports=work_reports, customers=customers, employees=employees)
 
 
 @work_report_bp.route("/new", methods=["GET", "POST"])
@@ -48,9 +49,10 @@ def create_work_report():
 @work_report_bp.route("/<int:work_report_id>", methods=["GET"])
 def get_work_report(work_report_id: int):
     with Session(engine) as session:
-        service = WorkReportService(session)
-        work_report = service.get_work_report(work_report_id)
-    return render_template("work_reports/detail.html", work_report=work_report)
+        work_report = WorkReportService(session).get_work_report(work_report_id)
+        customer = CustomerService(session).get_customer(work_report.customer_id)
+        employee = EmployeeService(session).get_employee(work_report.employee_id)
+    return render_template("work_reports/detail.html", work_report=work_report, customer=customer, employee=employee)
 
 
 @work_report_bp.route("/<int:work_report_id>/edit", methods=["GET", "POST"])

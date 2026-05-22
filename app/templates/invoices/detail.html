@@ -1,61 +1,131 @@
 {% extends 'base.html' %}
+{% block title %}Invoice #{{ invoice.id }}{% endblock %}
 {% block content %}
-<h1>Invoice #{{ invoice.id }} — {{ invoice.title }}</h1>
-<p><strong>Customer:</strong> {{ invoice.customer_id }}</p>
-<p><strong>Status:</strong> {{ invoice.status.name }} | <strong>Date:</strong> {{ invoice.creation_date }}</p>
-<p>{{ invoice.description }}</p>
-{% if invoice.notes %}<p><em>{{ invoice.notes }}</em></p>{% endif %}
-
-<h2>Work Reports</h2>
-<table>
-    <tr><th>ID</th><th>Title</th><th>Date</th><th>Total</th>{% if invoice.status.name == 'CREATED' %}<th></th>{% endif %}</tr>
-    {% for wr in invoice.work_reports %}
-    <tr>
-        <td>{{ wr.id }}</td>
-        <td><a href="{{ url_for('work_reports.get_work_report', work_report_id=wr.id) }}">{{ wr.title }}</a></td>
-        <td>{{ wr.execution_date }}</td>
-        <td>{{ wr.total_cost }}</td>
-        {% if invoice.status.name == 'CREATED' %}
-        <td>
-            <form method="post" action="{{ url_for('invoices.remove_work_report', invoice_id=invoice.id, work_report_id=wr.id) }}">
-                <button type="submit">Remove</button>
-            </form>
-        </td>
+<div class="page-header">
+    <h1>Invoice #{{ invoice.id }} — {{ invoice.title }}</h1>
+    <div style="display:flex;gap:8px;align-items:center">
+        {% if invoice.status.name == 'PAID' %}
+            <span class="badge badge-green">Paid</span>
+        {% elif invoice.status.name == 'SENT' %}
+            <span class="badge badge-blue">Sent</span>
+        {% else %}
+            <span class="badge badge-gray">Draft</span>
         {% endif %}
-    </tr>
-    {% else %}
-    <tr><td colspan="5">No work reports attached.</td></tr>
-    {% endfor %}
+        <a class="btn btn-secondary" href="{{ url_for('invoices.download_invoice_pdf', invoice_id=invoice.id) }}">&#x1F4E5; Download PDF</a>
+        <a class="btn btn-secondary" href="{{ url_for('invoices.list_invoices') }}">Back to list</a>
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+    <div class="card-header">Details</div>
+    <div class="card-body">
+        <div class="detail-row">
+            <span class="detail-label">Customer</span>
+            <span class="detail-value">{{ customer.full_name }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Date</span>
+            <span class="detail-value">{{ invoice.creation_date }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Description</span>
+            <span class="detail-value">{{ invoice.description }}</span>
+        </div>
+        {% if invoice.notes %}
+        <div class="detail-row">
+            <span class="detail-label">Notes</span>
+            <span class="detail-value" style="font-style:italic">{{ invoice.notes }}</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+    <div class="card-header">Work Reports</div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Date</th>
+                    <th>Subtotal</th>
+                    {% if invoice.status.name == 'CREATED' %}<th></th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for wr in invoice.work_reports %}
+                <tr>
+                    <td>{{ wr.id }}</td>
+                    <td><a href="{{ url_for('work_reports.get_work_report', work_report_id=wr.id) }}">{{ wr.title }}</a></td>
+                    <td>{{ wr.execution_date }}</td>
+                    <td>{{ "%.2f"|format(wr.total_cost) }}</td>
+                    {% if invoice.status.name == 'CREATED' %}
+                    <td>
+                        <form method="post" action="{{ url_for('invoices.remove_work_report', invoice_id=invoice.id, work_report_id=wr.id) }}">
+                            <button class="btn btn-danger btn-sm" type="submit" onclick="return confirm('Remove this work report from the invoice?')">Remove</button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                <tr><td colspan="5"><div class="empty-state"><p>No work reports attached yet.</p></div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
     {% if invoice.work_reports %}
-    <tr><td colspan="3"><strong>Subtotal</strong></td><td><strong>{{ invoice.total_cost }}</strong></td>{% if invoice.status.name == 'CREATED' %}<td></td>{% endif %}</tr>
+    <div class="totals-box">
+        <div class="total-row">
+            <span class="lbl">Subtotal</span>
+            <span class="val">{{ "%.2f"|format(invoice.total_cost) }}</span>
+        </div>
+        <div class="total-row">
+            <span class="lbl">Tax (8.1%)</span>
+            <span class="val">{{ "%.2f"|format(invoice.total_cost_with_tax - invoice.total_cost) }}</span>
+        </div>
+        <div class="total-row grand">
+            <span class="lbl">Total</span>
+            <span class="val">{{ "%.2f"|format(invoice.total_cost_with_tax) }}</span>
+        </div>
+    </div>
     {% endif %}
-</table>
 
-{% if invoice.status.name == 'CREATED' and unassigned_work_reports %}
-<form method="post" action="{{ url_for('invoices.add_work_report', invoice_id=invoice.id) }}">
-    <select name="work_report_id" required>
-        <option value="" disabled selected>Select a work report</option>
-        {% for wr in unassigned_work_reports %}
-        <option value="{{ wr.id }}">{{ wr.title }} ({{ wr.execution_date }})</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Add work report</button>
-</form>
-{% endif %}
+    {% if invoice.status.name == 'CREATED' and unassigned_work_reports %}
+    <div class="card-body" style="border-top:1px solid var(--gray-200)">
+        <form method="post" action="{{ url_for('invoices.add_work_report', invoice_id=invoice.id) }}" style="display:flex;gap:12px;align-items:flex-end">
+            <div class="form-group" style="flex:1;margin-bottom:0">
+                <label>Add a work report</label>
+                <select name="work_report_id" required>
+                    <option value="" disabled selected>Select a work report…</option>
+                    {% for wr in unassigned_work_reports %}
+                    <option value="{{ wr.id }}">{{ wr.title }} ({{ wr.execution_date }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button class="btn btn-primary" type="submit">Add</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
 
-<p><strong>Subtotal:</strong> {{ invoice.total_cost }}</p>
-<p><strong>Total (with tax):</strong> {{ invoice.total_cost_with_tax }}</p>
-
-<div class="actions">
+<div class="status-actions">
     {% if invoice.status.name == 'CREATED' %}
-    <form method="post" action="{{ url_for('invoices.send_invoice', invoice_id=invoice.id) }}">
-        <button type="submit">Mark as sent</button>
-    </form>
+        <a class="btn btn-secondary" href="{{ url_for('invoices.edit_invoice', invoice_id=invoice.id) }}">Edit</a>
+        <form method="post" action="{{ url_for('invoices.send_invoice', invoice_id=invoice.id) }}">
+            <button class="btn btn-warning" type="submit">Mark as Sent</button>
+        </form>
     {% endif %}
     {% if invoice.status.name == 'SENT' %}
-    <form method="post" action="{{ url_for('invoices.pay_invoice', invoice_id=invoice.id) }}">
-        <button type="submit">Mark as paid</button>
-    </form>
+        <form method="post" action="{{ url_for('invoices.pay_invoice', invoice_id=invoice.id) }}">
+            <button class="btn btn-success" type="submit">Mark as Paid</button>
+        </form>
+    {% endif %}
+    {% if invoice.deletable %}
+        <form method="post" action="{{ url_for('invoices.delete_invoice', invoice_id=invoice.id) }}">
+            <button class="btn btn-danger" type="submit" onclick="return confirm('Delete this invoice? This cannot be undone.')">Delete Invoice</button>
+        </form>
     {% endif %}
 </div>
 {% endblock %}

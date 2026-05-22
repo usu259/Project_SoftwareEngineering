@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}{{ employee.full_name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>{{ employee.full_name }}</h1>
+    <div style="display:flex;gap:8px">
+        <a class="btn btn-secondary" href="{{ url_for('employees.edit_employee', employee_id=employee.id) }}">Edit</a>
+        <form method="post" action="{{ url_for('employees.delete_employee', employee_id=employee.id) }}">
+            <button class="btn btn-danger" type="submit" onclick="return confirm('Delete {{ employee.full_name }}?')">Delete</button>
+        </form>
+        <a class="btn btn-secondary" href="{{ url_for('employees.list_employees') }}">Back to list</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Details</div>
+    <div class="card-body">
+        <div class="detail-row">
+            <span class="detail-label">Role</span>
+            <span class="detail-value"><span class="badge badge-gray">{{ employee.role.value | capitalize }}</span></span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ employee.email }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Phone</span>
+            <span class="detail-value">{{ employee.phone }}</span>
+        </div>
+    </div>
+</div>
+{% endblock %}

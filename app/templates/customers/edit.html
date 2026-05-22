@@ -1,13 +1,59 @@
 {% extends 'base.html' %}
+{% block title %}Edit {{ customer.full_name }}{% endblock %}
 {% block content %}
-<h1>Edit Customer: {{ customer.full_name }}</h1>
-<form method="post">
-    <label>Email <input name="email" type="email" value="{{ customer.email }}" required></label>
-    <label>Phone <input name="phone" value="{{ customer.phone }}" required></label>
-    <label>Street <input name="street" value="{{ customer.address.street }}" required></label>
-    <label>City <input name="city" value="{{ customer.address.city }}" required></label>
-    <label>ZIP code <input name="zip_code" value="{{ customer.address.zip_code }}" required></label>
-    <label>Country <input name="country" value="{{ customer.address.country }}" required></label>
-    <button type="submit">Save</button>
-</form>
+<div class="page-header">
+    <h1>Edit Customer</h1>
+    <a class="btn btn-secondary" href="{{ url_for('customers.get_customer', customer_id=customer.id) }}">Cancel</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <div class="form-section-title">Personal Info</div>
+            <div class="form-grid form-grid-2">
+                <div class="form-group">
+                    <label>First name</label>
+                    <input name="first_name" value="{{ customer.first_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Last name</label>
+                    <input name="last_name" value="{{ customer.last_name }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input name="email" type="email" value="{{ customer.email }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input name="phone" value="{{ customer.phone }}" required>
+                </div>
+            </div>
+
+            <div class="form-section-title">Address</div>
+            <div class="form-grid form-grid-2">
+                <div class="form-group" style="grid-column: span 2">
+                    <label>Street</label>
+                    <input name="street" value="{{ customer.address.street }}" required>
+                </div>
+                <div class="form-group">
+                    <label>City</label>
+                    <input name="city" value="{{ customer.address.city }}" required>
+                </div>
+                <div class="form-group">
+                    <label>ZIP code</label>
+                    <input name="zip_code" value="{{ customer.address.zip_code }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Country</label>
+                    <input name="country" value="{{ customer.address.country }}" required>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit">Save Changes</button>
+                <a class="btn btn-secondary" href="{{ url_for('customers.get_customer', customer_id=customer.id) }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
