@@ -1,30 +1,31 @@
 # Use-case Diagram
 
 ```mermaid
-flowchart TD
-    subgraph System
-        LOGIN([Log-in])
-        MP([Manage positions\nmaterials / labor])
-        MCP([Manage customers\n/ projects])
-        GRI([Generate report\n/ invoice])
-        DA([Data analysis])
-        VPP([View project\nprogress])
-        RPU([Record positions\nused on project])
+flowchart LR
+    subgraph Billing Application
+        subgraph Work Reports
+            CWR[Create Work Report]
+            EWR[Edit Work Report]
+            VSD[View Stem Data]
+        end
+        subgraph Invoices
+            CI[Create Invoice]
+            EI[Edit Invoice]
+        end
     end
 
-    SUPERVISOR((Supervisor))
-    WORKER((Worker))
-    CUSTOMER((Customer))
+    WO((Worker))
+    AC((Accountant))
 
-    SUPERVISOR --> LOGIN
-    SUPERVISOR --> MP
-    SUPERVISOR --> MCP
-    SUPERVISOR --> GRI
-    SUPERVISOR --> DA
+    WO ----> CWR
+    WO ----> EWR
+    AC ---> CI
+    CI -. may include .-> EWR
+    EI -. relates on .-> CI
+    EWR -. includes .-> VSD
+    EWR -. relates on .-> CWR
 
-    WORKER --> LOGIN
-    WORKER --> RPU
 
-    CUSTOMER --> LOGIN
-    CUSTOMER --> VPP
+
+    AC --> EWR
 ```
