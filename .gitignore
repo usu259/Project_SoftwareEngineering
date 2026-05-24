@@ -1,0 +1,13 @@
+**/__pycache__/
+*.pyc
+*.pyo
+.vscode/
+*.ipynb
+*.db
+.pytest_cache/
+.claude/
+dist/
+build/
+*.spec
+_test_pdf.py
+test_invoice.pdf

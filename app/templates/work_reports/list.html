@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Work Reports{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Work Reports</h1>
+    <a class="btn btn-primary" href="{{ url_for('work_reports.create_work_report') }}">+ New Work Report</a>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Customer</th>
+                    <th>Employee</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for wr in work_reports %}
+                <tr>
+                    <td>{{ wr.id }}</td>
+                    <td><strong>{{ wr.title }}</strong></td>
+                    <td>{{ customers.get(wr.customer_id, wr.customer_id) }}</td>
+                    <td>{{ employees.get(wr.employee_id, wr.employee_id) }}</td>
+                    <td>{{ wr.execution_date }}</td>
+                    <td>{{ "%.2f"|format(wr.total_cost) }}</td>
+                    <td>
+                        {% if wr.invoice_id %}
+                            <span class="badge badge-blue">Billed</span>
+                        {% else %}
+                            <span class="badge badge-gray">Unbilled</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-secondary btn-sm" href="{{ url_for('work_reports.get_work_report', work_report_id=wr.id) }}">View</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8"><div class="empty-state"><p>No work reports yet.</p><a class="btn btn-primary" href="{{ url_for('work_reports.create_work_report') }}">Create first report</a></div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

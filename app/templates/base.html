@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Billing App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="topbar">
+        <a class="topbar-brand" href="{{ url_for('index') }}">&#x1F4CB; Billing App</a>
+        <div class="topbar-nav">
+            <a href="{{ url_for('customers.list_customers') }}">Customers</a>
+            <a href="{{ url_for('employees.list_employees') }}">Employees</a>
+            <a href="{{ url_for('work_reports.list_work_reports') }}">Work Reports</a>
+            <a href="{{ url_for('invoices.list_invoices') }}">Invoices</a>
+        </div>
+    </nav>
+
+    <div class="main">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+                <div class="alert alert-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

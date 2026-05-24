@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Invoices{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1>Invoices</h1>
+    <a class="btn btn-primary" href="{{ url_for('invoices.create_invoice') }}">+ New Invoice</a>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Total (incl. tax)</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in invoices %}
+                <tr>
+                    <td>{{ inv.id }}</td>
+                    <td><strong>{{ inv.title }}</strong></td>
+                    <td>{{ customers.get(inv.customer_id, inv.customer_id) }}</td>
+                    <td>{{ inv.creation_date }}</td>
+                    <td>{{ "%.2f"|format(inv.total_cost_with_tax) }}</td>
+                    <td>
+                        {% if inv.status.name == 'PAID' %}
+                            <span class="badge badge-green">Paid</span>
+                        {% elif inv.status.name == 'SENT' %}
+                            <span class="badge badge-blue">Sent</span>
+                        {% else %}
+                            <span class="badge badge-gray">Draft</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-secondary btn-sm" href="{{ url_for('invoices.get_invoice', invoice_id=inv.id) }}">View</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7"><div class="empty-state"><p>No invoices yet.</p><a class="btn btn-primary" href="{{ url_for('invoices.create_invoice') }}">Create first invoice</a></div></td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
