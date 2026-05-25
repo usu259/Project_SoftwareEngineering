@@ -289,7 +289,7 @@ The proof-of-concept uses SQLite as its database; PostgreSQL is planned for prod
 
 #### 5.1.3 Distribution
 
-The source code is hosted on [GitHub](https://github.com/usu259/Project_SoftwareEngineering) in a private repository. Public access is not planned at this time.
+The source code is hosted on [GitHub](https://github.com/usu259/Project_SoftwareEngineering) in a a public repository. This is only done to allow module coordinators to grad the project, distribution is not planned.
 
 Since the product owner is part of the development team and production usage is uncertain at this stage, continuous integration and deployment (CI/CD) is not planned for the current release.
 
