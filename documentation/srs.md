@@ -396,42 +396,42 @@ With the conclusion of the course "Software Engineering and Design Patterns," Lu
 
 The models below can also be found in the GitHub repository under `documentation/diagrams`.
 
-![Use Case diagram](../diagrams/use_case.png)
+![Use Case diagram](diagrams/use_case.png)
 
 _Figure 1_: Use Case diagram. The relevant actors are the worker and the accountant.
 
-![Sequence diagram](../diagrams/sequence.png)
+![Sequence diagram](diagrams/sequence.png)
 
 _Figure 2_: Sequence diagram. Divided between worker and accountant workflows.
 
-![Class diagram](../diagrams/class.png)
+![Class diagram](diagrams/class.png)
 
 _Figure 3_: Base classes identified. This model excludes service and repository classes as well as API routes.
 
-![Activity diagram](../diagrams/activity.png)
+![Activity diagram](diagrams/activity.png)
 
 _Figure 4_: Activity diagram.
 
 ### Appendix B: Architecture Models
 
-![Architecture diagram](../diagrams/architecture.jpg)
+![Architecture diagram](diagrams/architecture.jpg)
 
 _Figure 5_: Architecture design.
 
-![Domain-Driven Design diagram](../diagrams/domain_drive_design.jpg)
+![Domain-Driven Design diagram](diagrams/domain_drive_design.jpg)
 
 _Figure 6_: Simplified illustration of the Domain-Driven Design structure. This pattern applies to every domain class shown in _Figure 3 (Appendix A)_.
 
-![Entity–Relation diagram](../diagrams/database_er.png)
+![Entity–Relation diagram](diagrams/database_er.png)
 
 _Figure 7_: Entity–Relation diagram.
 
 ### Appendix C: User Interface Mockups
 
-![GUI Mockup 1](../diagrams/gui_mockup_1.png)
+![GUI Mockup 1](diagrams/gui_mockup_1.png)
 
 _Figure 8_: Mockup for the worker UI when adding a new report. Smaller frames represent individual position entries to be added to a work report.
 
-![GUI Mockup 2](../diagrams/gui_mockup_2.png)
+![GUI Mockup 2](diagrams/gui_mockup_2.png)
 
 _Figure 9_: Mockup for the accountant UI when generating a new invoice. Shows an overview of relevant positions and reports, the invoice total, and the action buttons.
