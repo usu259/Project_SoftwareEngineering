@@ -2,28 +2,33 @@
 
 ```mermaid
 sequenceDiagram
-    actor Supervisor
-    participant System
-    participant Project
-    participant WorkOrder
+    actor Worker
+    actor Accountant
+    box System
+    participant WorkReport
     participant Position
     participant Invoice
+    end
+    actor Customer
 
-    Supervisor->>System: Mark project as complete
-    System->>Project: setStatus("completed")
-    Project-->>System: status updated
+    activate Worker
+    Worker->>Customer: works at
+    Worker->>WorkReport: creates
+    activate WorkReport
+    WorkReport->>Position: request Information
+    Position-->>WorkReport:
+    deactivate WorkReport
+    deactivate Worker
+    Accountant->>Invoice: creates
+    activate Accountant
+    activate Invoice
+    Invoice->>WorkReport: requests Information
+    WorkReport-->>Invoice:
+    Invoice-->>Accountant: exported as PDF
+    deactivate Invoice
+    Accountant->>Customer: sends per Mail
+    deactivate Accountant
 
-    System->>WorkOrder: fetchAll(project_id)
-    WorkOrder-->>System: list of work orders
 
-    System->>Position: fetchAll(project_id)
-    Position-->>System: list of positions (labor + materials)
 
-    System->>Invoice: create(project_id, totals)
-    Invoice-->>System: Invoice object created
-
-    System->>Invoice: exportPDF()
-    Invoice-->>System: PDF file generated
-
-    System-->>Supervisor: Invoice ready (preview + download)
 ```
