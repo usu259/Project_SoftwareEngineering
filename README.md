@@ -99,6 +99,8 @@ The executable will be created at `dist/Billing App.exe`.
 | `config.py` | App-wide constants (tax rate, field max lengths) |
 | `app/database.py` | SQLAlchemy engine and table initialisation |
 | `app/app.py` | Flask app factory, blueprint registration |
+| `documentation/srs.md` | Product documentation in form of a software requirement specification (SRS) |
+| `documentation/diagrams ` | various diagrams explaining architecture, workflows and requirements |
 
 ## License
 
