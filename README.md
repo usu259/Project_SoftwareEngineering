@@ -93,14 +93,14 @@ The executable will be created at `dist/Billing App.exe`.
 
 ## Project structure highlights
 
-| File | Purpose |
-|------|---------|
-| `main.py` | Entry point — creates the Flask app and starts the server |
-| `config.py` | App-wide constants (tax rate, field max lengths) |
-| `app/database.py` | SQLAlchemy engine and table initialisation |
-| `app/app.py` | Flask app factory, blueprint registration |
-| `documentation/srs.md` | Product documentation in form of a software requirement specification (SRS) |
-| `documentation/diagrams ` | various diagrams explaining architecture, workflows and requirements |
+| File                      | Purpose                                                                     |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `main.py`                 | Entry point — creates the Flask app and starts the server                   |
+| `config.py`               | App-wide constants (tax rate, field max lengths)                            |
+| `app/database.py`         | SQLAlchemy engine and table initialisation                                  |
+| `app/app.py`              | Flask app factory, blueprint registration                                   |
+| `documentation/srs.md`    | Product documentation in form of a software requirement specification (SRS) |
+| `documentation/diagrams ` | various diagrams explaining architecture, workflows and requirements        |
 
 ## License
 
